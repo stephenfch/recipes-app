@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>香港家常菜食譜 · Resep Rumahan Hong Kong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f5;
+  --card-bg: #ffffff;
+  --text: #2c2c2c;
+  --text-secondary: #666;
+  --accent: #e74c3c;
+  --accent-light: #fdecea;
+  --border: #eee;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --cat-chicken: #ff9800;
+  --cat-pork: #e91e63;
+  --cat-beef: #795548;
+  --cat-seafood: #03a9f4;
+  --cat-vegetables: #4caf50;
+  --cat-salad: #8bc34a;
+  --cat-soup: #ff5722;
+  --cat-porridge: #9c27b0;
+  --cat-noodles: #ff9800;
+  --cat-riceball: #607d8b;
+  --cat-pasta: #f44336;
+  --cat-egg: #ffc107;
+  --cat-dessert: #e91e63;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans TC', 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  padding: 20px 16px 16px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(231,76,60,0.3);
+}
+.header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+.header p { font-size: 0.85rem; opacity: 0.9; }
+
+/* Search */
+.search-container {
+  padding: 12px 16px 8px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.search-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.search-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-family: inherit;
+  background: white;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: #aaa; }
+.search-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* Random & Add buttons */
+.action-buttons {
+  padding: 8px 16px 12px;
+  display: flex;
+  gap: 8px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.btn-random {
+  flex: 1;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(238,90,36,0.3);
+}
+.btn-random:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(238,90,36,0.4); }
+.btn-random:active { transform: translateY(0); }
+.btn-add {
+  padding: 14px 20px;
+  background: white;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-add:hover { background: var(--accent-light); }
+
+/* Filters */
+.filters {
+  padding: 0 16px 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.filter-section { margin-bottom: 10px; }
+.filter-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: block;
+}
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.filter-btn {
+  padding: 6px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: white;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  color: var(--text);
+  font-weight: 500;
+}
+.filter-btn:hover { border-color: #ccc; background: #f8f8f8; }
+.filter-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.filter-btn .emoji { margin-right: 2px; }
+
+/* Recipe Grid */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  padding: 0 16px 80px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Recipe Card */
+.recipe-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.recipe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+.card-emoji {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+}
+.card-body { padding: 10px 12px 12px; }
+.card-zh {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 2px;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-fil {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.meta-tag {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.meta-tag.cat { font-weight: 600; }
+.meta-tag.cat-chicken { background: #fff3e0; color: #e65100; }
+.meta-tag.cat-pork { background: #fce4ec; color: #c62828; }
+.meta-tag.cat-beef { background: #efebe9; color: #4e342e; }
+.meta-tag.cat-seafood { background: #e1f5fe; color: #01579b; }
+.meta-tag.cat-vegetables { background: #e8f5e9; color: #1b5e20; }
+.meta-tag.cat-salad { background: #f1f8e9; color: #33691e; }
+.meta-tag.cat-soup { background: #fbe9e7; color: #bf360c; }
+.meta-tag.cat-porridge { background: #f3e5f5; color: #4a148c; }
+.meta-tag.cat-noodles { background: #fff8e1; color: #f57f17; }
+.meta-tag.cat-riceball { background: #eceff1; color: #263238; }
+.meta-tag.cat-pasta { background: #ffebee; color: #b71c1c; }
+.meta-tag.cat-egg { background: #fffde7; color: #f57f17; }
+.meta-tag.cat-dessert { background: #fce4ec; color: #ad1457; }
+
+/* No results */
+.no-results {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--text-secondary);
+  grid-column: 1 / -1;
+}
+.no-results .big-emoji { font-size: 3rem; margin-bottom: 12px; }
+
+/* Modal Overlay */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.active { display: flex; }
+
+/* Modal */
+.modal {
+  background: white;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+  -webkit-overflow-scrolling: touch;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 10;
+  border-radius: 20px 20px 0 0;
+}
+.modal-title { flex: 1; padding-right: 12px; }
+.modal-title h2 { font-size: 1.2rem; font-weight: 700; line-height: 1.3; }
+.modal-title .subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
+.modal-close {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #f0f0f0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: #e0e0e0; }
+
+.modal-emoji {
+  text-align: center;
+  padding: 20px;
+  font-size: 4rem;
+  background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+}
+.modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 20px 16px;
+}
+.modal-meta .meta-tag { font-size: 0.8rem; padding: 4px 10px; }
+
+.modal-section {
+  padding: 0 20px 16px;
+}
+.modal-section h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+}
+.modal-section ul {
+  list-style: none;
+  padding: 0;
+}
+.modal-section ul li {
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-section ul li:last-child { border-bottom: none; }
+.modal-section ul li::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.modal-section ol {
+  padding-left: 20px;
+}
+.modal-section ol li {
+  padding: 6px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Add Recipe Modal */
+.add-modal .modal {
+  max-height: 95vh;
+}
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  background: white;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-submit:hover { background: #c0392b; }
+.form-section {
+  padding: 0 20px 20px;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #333;
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  z-index: 999;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Scrollbar */
+.modal::-webkit-scrollbar { width: 4px; }
+.modal::-webkit-scrollbar-track { background: transparent; }
+.modal::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+/* Responsive */
+@media (min-width: 480px) {
+  .recipe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+@media (min-width: 768px) {
+  .recipe-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .modal { border-radius: 20px; margin: auto; max-width: 560px; }
+  .modal-overlay { align-items: center; }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .card-emoji { height: 90px; font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🍲 香港家常菜食譜</h1>
+  <p>155 道家常菜 · Lutong Bahay ng Hong Kong</p>
+</div>
+
+<div class="search-container">
+  <div class="search-box">
+    <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜尋食譜 / Hanapin ang resipi...">
+  </div>
+  <div class="search-count" id="searchCount"></div>
+</div>
+
+<div class="action-buttons">
+  <button class="btn-random" onclick="randomRecipe()">🎲 今日食乜？</button>
+  <button class="btn-add" onclick="openAddModal()">＋ 加食譜</button>
+</div>
+
+<div class="filters">
+  <div class="filter-section">
+    <span class="filter-label">份量 · Bilang ng Tao</span>
+    <div class="filter-buttons" id="portionFilters">
+      <button class="filter-btn active" data-portion="all" onclick="setPortion('all', this)">全部</button>
+      <button class="filter-btn" data-portion="1-2" onclick="setPortion('1-2', this)">👪 1-2人</button>
+      <button class="filter-btn" data-portion="3-4" onclick="setPortion('3-4', this)">👪 3-4人</button>
+      <button class="filter-btn" data-portion="5+" onclick="setPortion('5+', this)">👪 5人+</button>
+    </div>
+  </div>
+  <div class="filter-section">
+    <span class="filter-label">類型 · Kategorya</span>
+    <div class="filter-buttons" id="categoryFilters"></div>
+  </div>
+</div>
+
+<div class="recipe-grid" id="recipeGrid"></div>
+
+<!-- Recipe Detail Modal -->
+<div class="modal-overlay" id="recipeModal" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">
+        <h2 id="modalTitle"></h2>
+        <div class="subtitle" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeRecipeModal()">✕</button>
+    </div>
+    <div class="modal-emoji" id="modalEmoji"></div>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-section" id="modalIngredients">
+      <h3>🥬 食材 · Mga Sangkap</h3>
+      <ul id="ingredientsList"></ul>
+    </div>
+    <div class="modal-section" id="modalSteps">
+      <h3>👨‍🍳 做法 · Paraan ng Pagluluto</h3>
+      <ol id="stepsList"></ol>
+    </div>
+  </div>
+</div>
+
+<!-- Add Recipe Modal -->
+<div class="modal-overlay add-modal" id="addModal" onclick="closeAddModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">
+        <h2>📝 加入新食譜 · Magdagdag ng Bagong Resipi</h2>
+      </div>
+      <button class="modal-close" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="form-section">
+      <div class="form-group">
+        <label>中文名稱</label>
+        <input type="text" id="addZh" placeholder="例：紅燒魚">
+      </div>
+      <div class="form-group">
+        <label>Filipino Name</label>
+        <input type="text" id="addFil" placeholder="例: Fried Fish in Soy Sauce">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>類型 · Kategorya</label>
+          <select id="addCategory">
+            <option value="chicken">🐔 雞肉 · Manok</option>
+            <option value="pork">🥩 豬肉 · Baboy</option>
+            <option value="beef">🐄 牛肉 · Baka</option>
+            <option value="seafood">🦐 海鮮 · Pagkaing-dagat</option>
+            <option value="vegetables">🥬 蔬菜 · Gulay</option>
+            <option value="salad">🥗 涼拌 · Malamig na Ulam</option>
+            <option value="soup">🍲 湯品 · Sabaw</option>
+            <option value="porridge">🥣 粥品 · Lugaw</option>
+            <option value="noodles">🍚 飯麵 · Kanin at Pansit</option>
+            <option value="riceball">🍙 飯團 · Bola ng Kanin</option>
+            <option value="pasta">🍝 意粉 · Pasta</option>
+            <option value="egg">🍳 蛋豆腐 · Itlog at Tokwa</option>
+            <option value="dessert">🍮 中式糖水 · Matamis</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>份量 · Bilang ng Tao</label>
+          <select id="addPortion">
+            <option value="1-2">1-2人</option>
+            <option value="3-4" selected>3-4人</option>
+            <option value="5+">5人+</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>難度 · Hirap</label>
+          <select id="addDifficulty">
+            <option value="easy">⭐ 簡單 · Madali</option>
+            <option value="medium">⭐⭐ 中等 · Katamtaman</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>時間 · Oras</label>
+          <input type="text" id="addTime" placeholder="30min">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>食材 · Mga Sangkap (每行一項)</label>
+        <textarea id="addIngredients" placeholder="雞腿 4隻&#10;蒜蓉 2湯匙&#10;醬油 3湯匙"></textarea>
+      </div>
+      <div class="form-group">
+        <label>做法 · Paraan (每步一行)</label>
+        <textarea id="addSteps" placeholder="雞腿洗淨切塊&#10;熱鍋下油，爆香蒜蓉&#10;加入雞腿翻炒至金黃"></textarea>
+      </div>
+      <button class="btn-submit" onclick="addCustomRecipe()">✅ 加入食譜 · Idagdag ang Resipi</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== RECIPE DATA =====
+const RECIPES = [{"id": 1, "zh": "蒜蓉蒸排骨", "fil": "Pinasingawang Tadyang ng Baboy sa Bawang", "category": "pork", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 2, "zh": "京都骨（酸甜排骨）", "fil": "Iga sa Matamis at Maasim na Sarsa", "category": "pork", "difficulty": "medium", "time": "30min", "portion": "3-4"}, {"id": 3, "zh": "番茄薯仔炆牛腩", "fil": "Nilagang Brisket ng Baka sa Kamatis at Patatas", "category": "beef", "difficulty": "medium", "time": "90min", "portion": "5+"}, {"id": 4, "zh": "蜜汁叉燒", "fil": "Char Siu na may Pulot", "category": "pork", "difficulty": "medium", "time": "50min", "portion": "3-4"}, {"id": 5, "zh": "涼瓜炒牛肉", "fil": "Ginisang Baka na may Ampalaya", "category": "beef", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 6, "zh": "柱侯醬燜雞翼", "fil": "Nilagang Pakpak ng Manok sa Chu Hou", "category": "chicken", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 7, "zh": "黑椒牛柳", "fil": "Lomo ng Baka sa Paminta Itim", "category": "beef", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 8, "zh": "韓式辣醬豬頸肉", "fil": "Inihaw na Leeg ng Baboy sa Gochujang", "category": "pork", "difficulty": "easy", "time": "45min", "portion": "3-4"}, {"id": 9, "zh": "椰汁香茅咖喱雞", "fil": "Curry na Manok sa Gata at Tanglad", "category": "chicken", "difficulty": "medium", "time": "35min", "portion": "3-4"}, {"id": 10, "zh": "豉汁蒸鯇魚", "fil": "Pinasingawang Isda sa Tausi", "category": "seafood", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 11, "zh": "蒜蓉蒸蝦", "fil": "Pinasingawang Hipon sa Bawang", "category": "seafood", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 12, "zh": "豆豉鯪魚炒油麥菜", "fil": "De Latang Isda sa Sarsa Tausi", "category": "seafood", "difficulty": "easy", "time": "15min", "portion": "3-4"}, {"id": 13, "zh": "薑蔥炒蟹", "fil": "Ginisang Alimasag sa Luya at Sibuyas", "category": "seafood", "difficulty": "medium", "time": "35min", "portion": "3-4"}, {"id": 14, "zh": "XO醬炒蝦仁", "fil": "Ginisang Hipon sa Sarsa XO", "category": "seafood", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 15, "zh": "味醂香煎三文魚", "fil": "Inihaw na Salmon sa Mirin", "category": "seafood", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 16, "zh": "咸檸檬蒸魚", "fil": "Pinasingawang Isda sa Inasnang Limon", "category": "seafood", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 17, "zh": "蠔油生菜", "fil": "Letsugas sa Sarsa Tiram", "category": "vegetables", "difficulty": "easy", "time": "10min", "portion": "3-4"}, {"id": 18, "zh": "蒜蓉炒芥蘭", "fil": "Ginisang Kailan sa Bawang", "category": "vegetables", "difficulty": "easy", "time": "10min", "portion": "3-4"}, {"id": 19, "zh": "蝦米炒椰菜", "fil": "Ginisang Repolyo sa Hibi", "category": "vegetables", "difficulty": "easy", "time": "15min", "portion": "3-4"}, {"id": 20, "zh": "涼拌青瓜", "fil": "Maasim-Matamis na Pipino", "category": "salad", "difficulty": "easy", "time": "40min", "portion": "1-2"}, {"id": 21, "zh": "木耳炒西芹百合", "fil": "Ginisang Tainga ng Daga sa Kintsay at Liryo", "category": "vegetables", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 22, "zh": "椒絲腐乳炒通菜", "fil": "Ginisang Kangkong sa Tahuring Maanghang", "category": "vegetables", "difficulty": "easy", "time": "15min", "portion": "3-4"}, {"id": 23, "zh": "節瓜蜆肉湯", "fil": "Sabaw ng Hairy Melon at Tulya", "category": "soup", "difficulty": "easy", "time": "35min", "portion": "3-4"}, {"id": 24, "zh": "冬瓜薏米湯", "fil": "Sabaw ng Kondol at Adlai", "category": "soup", "difficulty": "easy", "time": "120min", "portion": "3-4"}, {"id": 25, "zh": "番茄薯仔湯", "fil": "Sabaw ng Kamatis at Patatas", "category": "soup", "difficulty": "easy", "time": "60min", "portion": "3-4"}, {"id": 26, "zh": "紫菜蛋花湯", "fil": "Sabaw ng Nori at Itlog", "category": "soup", "difficulty": "easy", "time": "15min", "portion": "3-4"}, {"id": 27, "zh": "眉豆花生豬骨湯", "fil": "Sabaw ng Buto ng Baboy, Mani, at Paayap", "category": "soup", "difficulty": "easy", "time": "120min", "portion": "3-4"}, {"id": 28, "zh": "星洲炒米", "fil": "Bihon Estilong Singapore", "category": "noodles", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 29, "zh": "揚州炒飯", "fil": "Fried Rice Yangzhou", "category": "noodles", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 30, "zh": "豉油皇炒麵", "fil": "Pansit na may Toyo", "category": "noodles", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 31, "zh": "臘腸煲仔飯", "fil": "Kanin sa Palayok na may Chorizo Tsino", "category": "noodles", "difficulty": "medium", "time": "50min", "portion": "3-4"}, {"id": 32, "zh": "牛腩湯麵", "fil": "Pansit na may Sabaw ng Brisket ng Baka", "category": "noodles", "difficulty": "easy", "time": "40min", "portion": "3-4"}, {"id": 33, "zh": "番茄炒蛋", "fil": "Ginisang Itlog sa Kamatis", "category": "egg", "difficulty": "easy", "time": "15min", "portion": "3-4"}, {"id": 34, "zh": "涼瓜炒蛋", "fil": "Ginisang Itlog sa Ampalaya", "category": "egg", "difficulty": "easy", "time": "15min", "portion": "3-4"}, {"id": 35, "zh": "家常豆腐", "fil": "Tokwang Pang-araw-araw", "category": "egg", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 36, "zh": "蒸水蛋", "fil": "Pinasingawang Itlog na Malambot", "category": "egg", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 37, "zh": "麻婆豆腐", "fil": "Mapo Tofu", "category": "egg", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 38, "zh": "薑蔥蒸鯇魚", "fil": "Pinasingawang Isda sa Luya at Sibuyas na Dahon", "category": "seafood", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 39, "zh": "鹹蛋蒸肉餅", "fil": "Pinasingawang Giniling na Baboy na may Itlog na Inasnan", "category": "pork", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 40, "zh": "豉油皇雞脾", "fil": "Manok na Nilaga sa Toyo", "category": "chicken", "difficulty": "easy", "time": "60min", "portion": "5+"}, {"id": 41, "zh": "乾煸四季豆", "fil": "Tuyong Ginisang Baguio Beans", "category": "vegetables", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 42, "zh": "菜乾南北杏豬骨湯", "fil": "Sabaw ng Buto ng Baboy na may Tuyong Gulay at Almond", "category": "soup", "difficulty": "easy", "time": "150min", "portion": "3-4"}, {"id": 43, "zh": "柱侯醬薯仔炆牛肋條", "fil": "Baka na Nilaga sa Sarsa Chu Hou na may Patatas", "category": "beef", "difficulty": "medium", "time": "120min", "portion": "5+"}, {"id": 44, "zh": "香煎牛肉薯絲餅", "fil": "Pritong Keyk ng Kinayod na Patatas at Giniling na Baka", "category": "beef", "difficulty": "easy", "time": "40min", "portion": "3-4"}, {"id": 45, "zh": "泰式焗豬頸肉", "fil": "Inihaw na Leeg ng Baboy sa Estilong Thai", "category": "pork", "difficulty": "medium", "time": "90min", "portion": "5+"}, {"id": 46, "zh": "香濃鮮茄大蝦意粉", "fil": "Spaghetti na Hipon sa Malapot na Sarsa ng Kamatis", "category": "pasta", "difficulty": "medium", "time": "45min", "portion": "3-4"}, {"id": 47, "zh": "芝士焗西蘭花", "fil": "Inihawang Broccoli na may Keso", "category": "vegetables", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 48, "zh": "韓式拌飯", "fil": "Bibimbap (Koreanong Rice Bowl)", "category": "noodles", "difficulty": "medium", "time": "45min", "portion": "3-4"}, {"id": 49, "zh": "鹹蛋黃雞翼", "fil": "Pakpak ng Manok sa Sarsang Pula ng Inasnang Itlog", "category": "chicken", "difficulty": "medium", "time": "60min", "portion": "5+"}, {"id": 50, "zh": "柚子蜜雞翼", "fil": "Pakpak ng Manok sa Pulot na Yuzu", "category": "chicken", "difficulty": "easy", "time": "40min", "portion": "3-4"}, {"id": 51, "zh": "紅棗花膠燉鮮奶", "fil": "Pinasingawang Gatas na may Pulang Datiles at Fish Maw", "category": "dessert", "difficulty": "medium", "time": "90min", "portion": "3-4"}, {"id": 52, "zh": "滑蛋雞肉飯（親子丼）", "fil": "Manok at Itlog na Rice Bowl (Oyakodon)", "category": "noodles", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 53, "zh": "蒜片牛柳粒飯", "fil": "Rice Bowl na Dinice na Baka sa Bawang", "category": "noodles", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 54, "zh": "番茄炆豬軟骨", "fil": "Nilagang Lambot na Buto ng Baboy sa Kamatis", "category": "pork", "difficulty": "medium", "time": "72min", "portion": "5+"}, {"id": 55, "zh": "瑤柱蒸蛋", "fil": "Pinasingawang Itlog sa Conpoy", "category": "egg", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 56, "zh": "香煎粟米雞肉餅", "fil": "Pritong Patty ng Manok at Mais", "category": "chicken", "difficulty": "easy", "time": "45min", "portion": "3-4"}, {"id": 57, "zh": "香煎蓮藕餅", "fil": "Pritong Patty ng Lotus Root at Giniling na Baboy", "category": "pork", "difficulty": "medium", "time": "50min", "portion": "3-4"}, {"id": 58, "zh": "蟠龍茄子", "fil": "Pinasingawang Talong na may Rilyeno ng Isda at Baboy", "category": "vegetables", "difficulty": "medium", "time": "40min", "portion": "3-4"}, {"id": 59, "zh": "口水雞翼", "fil": "Malamig na Nilagang Pakpak ng Manok sa Sarsang Sichuan", "category": "chicken", "difficulty": "medium", "time": "40min", "portion": "3-4"}, {"id": 60, "zh": "卡邦尼意粉", "fil": "Spaghetti Carbonara", "category": "pasta", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 61, "zh": "簡易電飯煲黑椒番茄牛肉飯", "fil": "Rice Cooker na Kanin na may Baka sa Paminta at Kamatis", "category": "noodles", "difficulty": "easy", "time": "45min", "portion": "3-4"}, {"id": 62, "zh": "豆角薯仔燜排骨", "fil": "Nilagang Tadyang ng Baboy sa Sitaw at Patatas", "category": "pork", "difficulty": "medium", "time": "90min", "portion": "5+"}, {"id": 63, "zh": "腐乳卡邦尼意粉", "fil": "Carbonara sa Sarsang Fermented na Tokwa", "category": "pasta", "difficulty": "medium", "time": "30min", "portion": "3-4"}, {"id": 64, "zh": "欖菜肉碎炒飯", "fil": "Sinangag na may Giniling na Baboy at Atsarang Olibo", "category": "noodles", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 65, "zh": "泰式三文魚扒", "fil": "Inihaw na Salmon sa Estilong Thai", "category": "seafood", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 66, "zh": "薑蔥煮蠔", "fil": "Talaba sa Luya at Sibuyas na Dahon", "category": "seafood", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 67, "zh": "金菇豬肉卷", "fil": "Rolyo ng Baboy na may Enoki Mushroom", "category": "pork", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 68, "zh": "瑤柱豬骨粥", "fil": "Lugaw na Buto ng Baboy at Conpoy", "category": "porridge", "difficulty": "easy", "time": "90min", "portion": "3-4"}, {"id": 69, "zh": "涼拌麻醬秋葵豆腐", "fil": "Malamig na Okra at Tokwa sa Sesame Dressing", "category": "salad", "difficulty": "easy", "time": "20min", "portion": "1-2"}, {"id": 70, "zh": "蒜香芝士香草薯角", "fil": "Inihaw na Potato Wedges sa Bawang at Keso", "category": "vegetables", "difficulty": "easy", "time": "45min", "portion": "3-4"}, {"id": 71, "zh": "蟲草花雞腳螺片湯", "fil": "Sabaw ng Paa ng Manok, Cordyceps Flower, at Kabibe", "category": "soup", "difficulty": "easy", "time": "120min", "portion": "3-4"}, {"id": 72, "zh": "粟米栗子瘦肉湯", "fil": "Sabaw ng Mais, Chestnut, at Baboy", "category": "soup", "difficulty": "easy", "time": "100min", "portion": "3-4"}, {"id": 73, "zh": "川味椒麻蝦", "fil": "Hipon sa Sarsang Sichuan Peppercorn", "category": "seafood", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 74, "zh": "陳皮清蒸鮑魚仔", "fil": "Pinasingawang Abalone sa Tuyong Balat ng Dalandan", "category": "seafood", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 75, "zh": "冬蟲夏草花膠燉響螺湯", "fil": "Sabaw ng Fish Maw at Kabibe na may Cordyceps", "category": "soup", "difficulty": "medium", "time": "180min", "portion": "3-4"}, {"id": 76, "zh": "蔥油豬扒", "fil": "Pork Chop sa Dobleng Sibuyas na Toyo", "category": "pork", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 77, "zh": "涼拌酸辣貓耳朵青瓜", "fil": "Malamig na Itlog na Fungus at Pipino", "category": "salad", "difficulty": "easy", "time": "25min", "portion": "1-2"}, {"id": 78, "zh": "三角飯糰", "fil": "Tatsulok na Rice Ball (Onigiri)", "category": "riceball", "difficulty": "easy", "time": "30min", "portion": "1-2"}, {"id": 79, "zh": "豆腐馬蹄肉餅", "fil": "Patty ng Tokwa, Water Chestnut, at Giniling na Baboy", "category": "pork", "difficulty": "easy", "time": "35min", "portion": "3-4"}, {"id": 80, "zh": "雙雪桃膠木瓜糖水", "fil": "Matamis na Sabaw ng Snow Fungus, Peach Resin, at Papaya", "category": "dessert", "difficulty": "easy", "time": "60min", "portion": "3-4"}, {"id": 81, "zh": "蘋果山楂雞翼", "fil": "Pakpak ng Manok sa Sarsang Mansanas at Hawthorn", "category": "chicken", "difficulty": "easy", "time": "40min", "portion": "3-4"}, {"id": 82, "zh": "南瓜百合瘦肉粥", "fil": "Lugaw na Kalabasa, Lily Bulb, at Baboy", "category": "porridge", "difficulty": "easy", "time": "72min", "portion": "3-4"}, {"id": 83, "zh": "臘腸小炒", "fil": "Ginisang Gulay na may Chinese Sausage", "category": "vegetables", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 84, "zh": "薑汁豚肉燒", "fil": "Inihaw na Baboy sa Sarsang Luya (Shogayaki)", "category": "pork", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 85, "zh": "菜乾蠔豉紅蘿蔔湯", "fil": "Sabaw ng Tuyong Gulay, Tuyong Talaba, at Karot", "category": "soup", "difficulty": "easy", "time": "138min", "portion": "3-4"}, {"id": 86, "zh": "日式黑芝麻雜菜飯糰", "fil": "Rice Ball na Gulay at Itim na Linga (Onigiri)", "category": "riceball", "difficulty": "medium", "time": "40min", "portion": "1-2"}, {"id": 87, "zh": "西蘭花炒牛肉", "fil": "Ginisang Broccoli at Beef Tenderloin", "category": "beef", "difficulty": "medium", "time": "35min", "portion": "3-4"}, {"id": 88, "zh": "赤小豆冬瓜蓮藕排骨湯", "fil": "Sabaw ng Tadyang ng Baboy na may Pulang Munggo, Kondol, at Lotus Root", "category": "soup", "difficulty": "easy", "time": "132min", "portion": "3-4"}, {"id": 89, "zh": "韓式牛肉飯卷", "fil": "Kimbap na Plant-based Beef", "category": "noodles", "difficulty": "medium", "time": "40min", "portion": "3-4"}, {"id": 90, "zh": "韓式牛肉飯", "fil": "Koreanong Beef Rice Bowl", "category": "noodles", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 91, "zh": "三文魚海帶味噌湯", "fil": "Miso Soup na May Salmon at Dagat na Damo", "category": "soup", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 92, "zh": "鮮茄三文魚蝴蝶粉沙律", "fil": "Salad na Farfalle Pasta na may Kamatis at Salmon", "category": "pasta", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 93, "zh": "免焗蜜桃鮮茄豬扒飯", "fil": "Walang-Oven na Pork Chop Rice sa Kamatis at De Latang Peach", "category": "noodles", "difficulty": "medium", "time": "40min", "portion": "3-4"}, {"id": 94, "zh": "紅棗淮山百合杞子煲雞", "fil": "Sabaw ng Manok na may Pulang Datiles, Huai Shan, Lily Bulb, at Goji", "category": "soup", "difficulty": "easy", "time": "198min", "portion": "3-4"}, {"id": 95, "zh": "健康蘑菇菠菜白醬意粉", "fil": "Pasta sa Cashew Cream Sauce na may Kabute at Espinaka", "category": "pasta", "difficulty": "medium", "time": "30min", "portion": "3-4"}, {"id": 96, "zh": "南瓜百合小米粥", "fil": "Lugaw na Millet, Kalabasa, at Lily Bulb", "category": "porridge", "difficulty": "easy", "time": "40min", "portion": "3-4"}, {"id": 97, "zh": "鮮淮山炒瘦肉", "fil": "Ginisang Sariwang Chinese Yam at Baboy", "category": "pork", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 98, "zh": "桂花桃膠燉三白", "fil": "Matamis na Peach Resin, Snow Fungus, at Lotus Seed sa Osmanthus", "category": "dessert", "difficulty": "easy", "time": "45min", "portion": "3-4"}, {"id": 99, "zh": "猴頭菇木瓜花生海底椰排骨湯", "fil": "Sabaw ng Tadyang ng Baboy na may Hericium Mushroom, Papaya, Mani, at Sea Coconut", "category": "soup", "difficulty": "easy", "time": "150min", "portion": "3-4"}, {"id": 100, "zh": "茄汁蝦", "fil": "Hipon sa Sarsang Kamatis", "category": "seafood", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 101, "zh": "栗子紅棗炆雞翼", "fil": "Nilagang Pakpak ng Manok sa Chestnut at Pulang Datiles", "category": "chicken", "difficulty": "easy", "time": "50min", "portion": "3-4"}, {"id": 102, "zh": "霸王花無花果雪梨紅蘿蔔瘦肉湯", "fil": "Sabaw ng Night-blooming Cereus, Igos, Pir, Karot, at Baboy", "category": "soup", "difficulty": "easy", "time": "198min", "portion": "3-4"}, {"id": 103, "zh": "雜菜炒公仔麵", "fil": "Ginisang Instant Noodles na may Gulay", "category": "noodles", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 104, "zh": "椒絲腐乳芥蘭炒鮮魷", "fil": "Ginisang Pusit at Kailan sa Fu Yu at Sili", "category": "seafood", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 105, "zh": "日式肉鬆飯糰", "fil": "Rice Ball na may Pork Floss (Onigiri)", "category": "riceball", "difficulty": "easy", "time": "20min", "portion": "1-2"}, {"id": 106, "zh": "韓式泡菜三文魚鬆炒飯", "fil": "Sinangag na Kimchi at Flaked Salmon", "category": "noodles", "difficulty": "medium", "time": "30min", "portion": "3-4"}, {"id": 107, "zh": "日式牛肉丼飯", "fil": "Hapon na Beef Rice Bowl (Gyudon)", "category": "noodles", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 108, "zh": "雜糧雞肉臘腸煲仔飯", "fil": "Multigrain na Kanin sa Palayok na may Manok at Chinese Sausage", "category": "noodles", "difficulty": "medium", "time": "45min", "portion": "3-4"}, {"id": 109, "zh": "泡菜豆腐鍋", "fil": "Kimchi at Tokwang Sabaw", "category": "soup", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 110, "zh": "台式肉燥飯配藜麥菜飯", "fil": "Taiwanese Braised Pork Rice na may Quinoa Vegetable Rice", "category": "noodles", "difficulty": "medium", "time": "60min", "portion": "3-4"}, {"id": 111, "zh": "檸檬薏米水", "fil": "Tubig na Lemon at Job's Tears", "category": "dessert", "difficulty": "easy", "time": "90min", "portion": "3-4"}, {"id": 112, "zh": "薯仔炆雞翼", "fil": "Nilagang Pakpak ng Manok sa Patatas", "category": "chicken", "difficulty": "medium", "time": "60min", "portion": "5+"}, {"id": 113, "zh": "豉油王雞翼", "fil": "Pakpak ng Manok sa Toyo", "category": "chicken", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 114, "zh": "節瓜章魚雞腳湯", "fil": "Sabaw ng Hairy Melon, Tuyong Pugita, at Paa ng Manok", "category": "soup", "difficulty": "easy", "time": "132min", "portion": "3-4"}, {"id": 115, "zh": "番茄豆腐鮮魚湯", "fil": "Sabaw ng Kamatis, Tokwa, at Sariwang Isda", "category": "soup", "difficulty": "medium", "time": "40min", "portion": "3-4"}, {"id": 116, "zh": "糖醋洋蔥豬扒", "fil": "Pork Chop sa Matamis-Maasim na Sarsa ng Sibuyas", "category": "pork", "difficulty": "medium", "time": "40min", "portion": "3-4"}, {"id": 117, "zh": "茄汁煎蝦", "fil": "Iniprito na Hipon sa Sarsang Kamatis", "category": "seafood", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 118, "zh": "日式照燒雞扒", "fil": "Teriyaki na Manok (Estilong Hapon)", "category": "chicken", "difficulty": "easy", "time": "45min", "portion": "3-4"}, {"id": 119, "zh": "苦瓜眉豆排骨湯", "fil": "Sabaw ng Ampalaya, Paayap, at Tadyang ng Baboy", "category": "soup", "difficulty": "easy", "time": "90min", "portion": "3-4"}, {"id": 120, "zh": "芝麻手撕雞", "fil": "Hinimay na Manok sa Sesame Dressing", "category": "salad", "difficulty": "medium", "time": "45min", "portion": "1-2"}, {"id": 121, "zh": "苦瓜黃豆無花果豬骨湯", "fil": "Sabaw ng Ampalaya, Soybean, at Igos na may Buto ng Baboy", "category": "soup", "difficulty": "easy", "time": "102min", "portion": "3-4"}, {"id": 122, "zh": "蒜香橄欖油意粉", "fil": "Spaghetti Aglio e Olio", "category": "pasta", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 123, "zh": "海底椰粟米紅蘿蔔湯", "fil": "Sabaw ng Sea Coconut, Mais, at Karot", "category": "soup", "difficulty": "easy", "time": "90min", "portion": "3-4"}, {"id": 124, "zh": "腐乳蒸雞", "fil": "Pinasingawang Manok sa Fu Yu", "category": "chicken", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 125, "zh": "鮮淮山蓮子排骨湯", "fil": "Sabaw ng Sariwang Chinese Yam, Lotus Seed, at Tadyang ng Baboy", "category": "soup", "difficulty": "easy", "time": "102min", "portion": "3-4"}, {"id": 126, "zh": "瑤柱滑雞粥", "fil": "Lugaw na Manok at Conpoy", "category": "porridge", "difficulty": "medium", "time": "72min", "portion": "3-4"}, {"id": 127, "zh": "金針雲耳蒸排骨", "fil": "Pinasingawang Tadyang sa Lily Bud at Itlog na Fungus", "category": "pork", "difficulty": "easy", "time": "35min", "portion": "3-4"}, {"id": 128, "zh": "香菇蒸肉餅", "fil": "Pinasingawang Giniling na Baboy sa Shiitake", "category": "pork", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 129, "zh": "白蘿蔔炆雞翼", "fil": "Nilagang Pakpak ng Manok sa Labanos", "category": "chicken", "difficulty": "easy", "time": "45min", "portion": "3-4"}, {"id": 130, "zh": "鮮茄燴雞扒", "fil": "Manok sa Sarsang Sariwang Kamatis", "category": "chicken", "difficulty": "medium", "time": "35min", "portion": "3-4"}, {"id": 131, "zh": "紫菜豆腐肉丸湯", "fil": "Sabaw ng Nori, Tokwa, at Meatball", "category": "soup", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 132, "zh": "皮蛋瘦肉粥", "fil": "Lugaw na Century Egg at Baboy", "category": "porridge", "difficulty": "easy", "time": "72min", "portion": "3-4"}, {"id": 133, "zh": "肉碎蒸水蛋", "fil": "Pinasingawang Malambot na Itlog na may Giniling na Baboy", "category": "egg", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 134, "zh": "瑤柱金菇扒菠菜", "fil": "Espinaka sa Sarsang Conpoy at Enoki Mushroom", "category": "vegetables", "difficulty": "medium", "time": "25min", "portion": "3-4"}, {"id": 135, "zh": "瑞士雞翼", "fil": "Matamis na Pakpak ng Manok (Swiss Wings)", "category": "chicken", "difficulty": "easy", "time": "40min", "portion": "3-4"}, {"id": 136, "zh": "韓式辣炒豬肉蓋飯", "fil": "Koreanong Maanghang na Baboy Rice Bowl", "category": "noodles", "difficulty": "medium", "time": "35min", "portion": "3-4"}, {"id": 137, "zh": "芥菜肉片豆腐湯", "fil": "Sabaw ng Mustasa, Baboy, at Tokwa", "category": "soup", "difficulty": "easy", "time": "35min", "portion": "3-4"}, {"id": 138, "zh": "簡易煎三文魚", "fil": "Simpleng Iniprito na Salmon", "category": "seafood", "difficulty": "easy", "time": "15min", "portion": "3-4"}, {"id": 139, "zh": "腰果蘆筍炒雞柳", "fil": "Ginisang Chicken Fillet sa Cashew at Asparagus", "category": "chicken", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 140, "zh": "健康白菜豆腐湯", "fil": "Malusog na Sabaw ng Napa Cabbage at Tokwa", "category": "soup", "difficulty": "easy", "time": "30min", "portion": "3-4"}, {"id": 141, "zh": "煎蛋角", "fil": "Chinese Mini Omelette na may Giniling na Baboy", "category": "egg", "difficulty": "medium", "time": "30min", "portion": "3-4"}, {"id": 142, "zh": "梅菜蒸鯇魚腩", "fil": "Pinasingawang Tiyan ng Isda sa Inasnang Mei Cai", "category": "seafood", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 143, "zh": "滑蛋番茄通粉", "fil": "Macaroni sa Sarsang Kamatis na may Malambot na Itlog", "category": "pasta", "difficulty": "medium", "time": "45min", "portion": "3-4"}, {"id": 144, "zh": "芥末雞絲粉皮", "fil": "Hinimay na Manok at Sheet Noodles sa Wasabi", "category": "salad", "difficulty": "medium", "time": "40min", "portion": "1-2"}, {"id": 145, "zh": "韓式泡菜炒飯", "fil": "Koreanong Kimchi Fried Rice", "category": "noodles", "difficulty": "easy", "time": "25min", "portion": "3-4"}, {"id": 146, "zh": "椰香咖喱炆雞", "fil": "Nilagang Manok sa Curry na Gata", "category": "chicken", "difficulty": "medium", "time": "72min", "portion": "5+"}, {"id": 147, "zh": "芝士牛油果焗墨西哥薄餅", "fil": "Inihaw na Tortilla na may Avocado at Keso", "category": "vegetables", "difficulty": "easy", "time": "35min", "portion": "3-4"}, {"id": 148, "zh": "青瓜炒雞柳", "fil": "Ginisang Chicken Fillet at Pipino", "category": "chicken", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 149, "zh": "燜冬菇腩排", "fil": "Nilagang Tadyang ng Baboy sa Shiitake", "category": "pork", "difficulty": "easy", "time": "40min", "portion": "3-4"}, {"id": 150, "zh": "梅子蒸排骨", "fil": "Pinasingawang Tadyang ng Baboy sa Sarsang Plum", "category": "pork", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 151, "zh": "蓮藕燜排骨", "fil": "Nilagang Tadyang ng Baboy sa Lotus Root", "category": "pork", "difficulty": "medium", "time": "55min", "portion": "3-4"}, {"id": 152, "zh": "泡菜豬肉粥", "fil": "Lugaw na Kimchi at Baboy", "category": "porridge", "difficulty": "easy", "time": "50min", "portion": "3-4"}, {"id": 153, "zh": "豉油雞（省醬油版）", "fil": "Manok sa Toyo (Estilong Cantonese)", "category": "chicken", "difficulty": "medium", "time": "90min", "portion": "5+"}, {"id": 154, "zh": "農家小炒肉", "fil": "Ginisang Baboy sa Estilong Bukid", "category": "pork", "difficulty": "easy", "time": "20min", "portion": "3-4"}, {"id": 155, "zh": "東坡茄子", "fil": "Dongpo na Talong", "category": "vegetables", "difficulty": "medium", "time": "40min", "portion": "3-4"}];
+
+// ===== CATEGORY CONFIG =====
+const CAT_CONFIG = {
+  chicken:   { emoji: '🐔', zh: '雞肉', fil: 'Manok' },
+  pork:      { emoji: '🥩', zh: '豬肉', fil: 'Baboy' },
+  beef:      { emoji: '🐄', zh: '牛肉', fil: 'Baka' },
+  seafood:   { emoji: '🦐', zh: '海鮮', fil: 'Pagkaing-dagat' },
+  vegetables:{ emoji: '🥬', zh: '蔬菜', fil: 'Gulay' },
+  salad:     { emoji: '🥗', zh: '涼拌', fil: 'Malamig na Ulam' },
+  soup:      { emoji: '🍲', zh: '湯品', fil: 'Sabaw' },
+  porridge:  { emoji: '🥣', zh: '粥品', fil: 'Lugaw' },
+  noodles:   { emoji: '🍚', zh: '飯麵', fil: 'Kanin at Pansit' },
+  riceball:  { emoji: '🍙', zh: '飯團', fil: 'Bola ng Kanin' },
+  pasta:     { emoji: '🍝', zh: '意粉', fil: 'Pasta' },
+  egg:       { emoji: '🍳', zh: '蛋豆腐', fil: 'Itlog at Tokwa' },
+  dessert:   { emoji: '🍮', zh: '中式糖水', fil: 'Matamis' }
+};
+
+const FOOD_EMOJIS = {
+  chicken: ['🍗','🍖','🐣','🐥'],
+  pork: ['🥩','🥓','🐷'],
+  beef: ['🐄','🥩','🍖'],
+  seafood: ['🐟','🦐','🦀','🦑','🐚','🦪'],
+  vegetables: ['🥦','🥬','🍆','🌶️','🍄','🥔','🫘','🥕'],
+  salad: ['🥒','🥗','🥙'],
+  soup: ['🍲','🥣'],
+  porridge: ['🥣','🍚'],
+  noodles: ['🍜','🍛','🍚','🌯'],
+  riceball: ['🍙','🍘'],
+  pasta: ['🍝','🍜'],
+  egg: ['🥚','🍳','🧈'],
+  dessert: ['🍮','🍮','🍋']
+};
+
+// ===== STATE =====
+let currentPortion = 'all';
+let currentCategory = 'all';
+let currentSearch = '';
+let customRecipes = [];
+
+// Load custom recipes from localStorage
+try {
+  const saved = localStorage.getItem('customRecipes');
+  if (saved) customRecipes = JSON.parse(saved);
+} catch(e) {}
+
+// ===== INIT =====
+function init() {
+  buildCategoryFilters();
+  renderRecipes();
+  updateCount();
+}
+
+// Build category filter buttons
+function buildCategoryFilters() {
+  const container = document.getElementById('categoryFilters');
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn active';
+  allBtn.dataset.category = 'all';
+  allBtn.onclick = () => setCategory('all', allBtn);
+  // Count all recipes
+  const totalCount = RECIPES.length + customRecipes.length;
+  allBtn.innerHTML = `全部 (${totalCount})`;
+  container.appendChild(allBtn);
+
+  const cats = ['chicken','pork','beef','seafood','vegetables','salad','soup','porridge','noodles','riceball','pasta','egg','dessert'];
+  cats.forEach(cat => {
+    const cfg = CAT_CONFIG[cat];
+    const count = RECIPES.filter(r => r.category === cat).length +
+                  customRecipes.filter(r => r.category === cat).length;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.category = cat;
+    btn.onclick = () => setCategory(cat, btn);
+    btn.innerHTML = `<span class="emoji">${cfg.emoji}</span> ${cfg.zh} (${count})`;
+    container.appendChild(btn);
+  });
+}
+
+// Filter functions
+function setPortion(portion, btn) {
+  currentPortion = portion;
+  document.querySelectorAll('#portionFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRecipes();
+  updateCount();
+}
+
+function setCategory(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('#categoryFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRecipes();
+  updateCount();
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  currentSearch = e.target.value.trim().toLowerCase();
+  renderRecipes();
+  updateCount();
+});
+
+function updateCount() {
+  const filtered = getFilteredRecipes();
+  document.getElementById('searchCount').textContent =
+    `顯示 ${filtered.length} 道食譜 · Ipinapakita ang ${filtered.length} na resipi`;
+}
+
+function getFilteredRecipes() {
+  const allRecipes = [...RECIPES, ...customRecipes];
+  return allRecipes.filter(r => {
+    if (currentPortion !== 'all' && r.portion !== currentPortion) return false;
+    if (currentCategory !== 'all' && r.category !== currentCategory) return false;
+    if (currentSearch) {
+      const s = currentSearch;
+      if (!r.zh.toLowerCase().includes(s) && !r.fil.toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
+}
+
+// ===== RENDER =====
+function renderRecipes() {
+  const grid = document.getElementById('recipeGrid');
+  const filtered = getFilteredRecipes();
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="no-results">
+        <div class="big-emoji">🍳</div>
+        <p>找不到符合的食譜<br>Walang resiping tugma</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(r => {
+    const cfg = CAT_CONFIG[r.category] || { emoji: '🍽️', zh: r.category, fil: r.category };
+    const emojis = FOOD_EMOJIS[r.category] || ['🍽️'];
+    const emoji = emojis[r.id % emojis.length] || cfg.emoji;
+    const diffLabel = r.difficulty === 'easy' ? '⭐ 簡單' : '⭐⭐ 中等';
+    const timeLabel = r.time;
+
+    return `
+      <div class="recipe-card" onclick="openRecipeModal(${r.id}, ${r.isCustom ? true : false})">
+        <div class="card-emoji">${emoji}</div>
+        <div class="card-body">
+          <div class="card-zh">${escHtml(r.zh)}</div>
+          <div class="card-fil">${escHtml(r.fil)}</div>
+          <div class="card-meta">
+            <span class="meta-tag cat cat-${r.category}">${cfg.emoji} ${cfg.zh}</span>
+            <span class="meta-tag">👪 ${r.portion}人</span>
+            <span class="meta-tag">${diffLabel}</span>
+            <span class="meta-tag">⏱️ ${timeLabel}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// ===== MODAL =====
+function openRecipeModal(id, isCustom) {
+  const allRecipes = [...RECIPES.map(r => ({...r, isCustom: false})), ...customRecipes.map(r => ({...r, isCustom: true}))];
+  const r = allRecipes.find(x => x.id === id);
+  if (!r) return;
+
+  const cfg = CAT_CONFIG[r.category] || { emoji: '🍽️', zh: r.category, fil: r.category };
+  const emojis = FOOD_EMOJIS[r.category] || ['🍽️'];
+  const emoji = emojis[r.id % emojis.length] || cfg.emoji;
+  const diffLabel = r.difficulty === 'easy' ? '⭐ 簡單 · Madali' : '⭐⭐ 中等 · Katamtaman';
+
+  document.getElementById('modalTitle').textContent = r.zh;
+  document.getElementById('modalSubtitle').textContent = r.fil;
+  document.getElementById('modalEmoji').textContent = emoji;
+  document.getElementById('modalMeta').innerHTML = `
+    <span class="meta-tag cat cat-${r.category}">${cfg.emoji} ${cfg.zh} · ${cfg.fil}</span>
+    <span class="meta-tag">👪 ${r.portion}人份</span>
+    <span class="meta-tag">${diffLabel}</span>
+    <span class="meta-tag">⏱️ ${r.time}</span>
+  `;
+
+  // Ingredients
+  const ingredients = r.ingredients || generateIngredients(r);
+  document.getElementById('ingredientsList').innerHTML = ingredients.map(i =>
+    `<li>${escHtml(i)}</li>`
+  ).join('');
+
+  // Steps
+  const steps = r.steps || generateSteps(r);
+  document.getElementById('stepsList').innerHTML = steps.map(s =>
+    `<li>${escHtml(s)}</li>`
+  ).join('');
+
+  document.getElementById('recipeModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRecipeModal() {
+  document.getElementById('recipeModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeModal(e) {
+  if (e.target === e.currentTarget) closeRecipeModal();
+}
+
+// ===== GENERATE PLACEHOLDER INGREDIENTS & STEPS =====
+function generateIngredients(r) {
+  const cat = r.category;
+  const zh = r.zh;
+  const common = ['鹽 適量','胡椒粉 少許'];
+
+  if (cat === 'chicken') return ['雞腿/雞翼 適量','蒜蓉 2湯匙','醬油 2湯匙','紹興酒 1湯匙','糖 1茶匙','薑片 幾片', ...common];
+  if (cat === 'pork') return ['豬肉/排骨 適量','蒜蓉 2湯匙','醬油 2湯匙','糖 1茶匙','紹興酒 1湯匙','蔥花 適量', ...common];
+  if (cat === 'beef') return ['牛肉 適量','蒜蓉 2湯匙','醬油 2湯匙','蠔油 1湯匙','糖 1茶匙','生粉 1茶匙', ...common];
+  if (cat === 'seafood') return ['鮮魚/蝦/蟹 適量','蒜蓉 2湯匙','薑片 幾片','蔥花 適量','醬油 2湯匙','紹興酒 1湯匙', ...common];
+  if (cat === 'vegetables') return ['蔬菜 適量','蒜蓉 2湯匙','油 1湯匙','鹽 適量','糖 少許'];
+  if (cat === 'salad') return ['主料 適量','醬油 1湯匙','醋 1茶匙','糖 1茶匙','麻油 1茶匙','蒜蓉 少許'];
+  if (cat === 'soup') return ['湯料 適量','清水 適量','鹽 適量','薑片 幾片','枸杞 少許'];
+  if (cat === 'porridge') return ['米 1杯','清水 8杯','瘦肉/配料 適量','薑絲 少許','蔥花 適量','鹽 適量'];
+  if (cat === 'noodles') return ['麵/飯 適量','醬油 2湯匙','油 1湯匙','蒜蓉 1湯匙','蔥花 適量','配料 適量'];
+  if (cat === 'riceball') return ['珍珠米 2杯','壽司醋 2湯匙','餡料 適量','海苔 適量'];
+  if (cat === 'pasta') return ['意粉 200g','蒜蓉 3瓣','橄欖油 2湯匙','鹽 適量','黑胡椒 適量'];
+  if (cat === 'egg') return ['雞蛋 3隻','鹽 少許','蔥花 適量','油 1湯匙'];
+  if (cat === 'dessert') return ['主料 適量','冰糖 適量','清水 適量','紅棗 幾顆'];
+  return ['食材 適量','調味料 適量'];
+}
+
+function generateSteps(r) {
+  const cat = r.category;
+  if (cat === 'soup') return [
+    '將所有湯料洗淨，備用。',
+    '大鍋加水，放入湯料，大火煮滾。',
+    '轉小火，蓋上鍋蓋，慢煮1.5-3小時。',
+    '加鹽調味，即可享用。'
+  ];
+  if (cat === 'porridge') return [
+    '米洗淨，加少許油和鹽醃15分鐘。',
+    '大鍋加水煮滾，放入米，大火煮10分鐘。',
+    '轉小火，加入配料，慢煮40-60分鐘至綿滑。',
+    '加鹽、蔥花、胡椒粉調味即可。'
+  ];
+  if (cat === 'steamed' || r.zh.includes('蒸')) return [
+    '將主料洗淨，用廚紙吸乾水分。',
+    '均勻塗上調味料，醃製15-20分鐘。',
+    '水滾後放入蒸鍋，大火蒸15-20分鐘。',
+    '灑上蔥花，淋上熱油，即可上桌。'
+  ];
+  if (cat === 'noodles') return [
+    '麵/米洗淨，配料切好備用。',
+    '熱鍋下油，爆香蒜蓉和蔥花。',
+    '加入配料翻炒至熟。',
+    '放入麵/飯，加醬油調味，翻炒均勻即可。'
+  ];
+  if (cat === 'pasta') return [
+    '大鍋水加鹽煮滾，放入意粉煮至彈牙（al dente），瀝乾備用。',
+    '熱鍋下橄欖油，爆香蒜蓉。',
+    '加入主料翻炒至熟。',
+    '放入意粉，加調味料拌勻，即可上桌。'
+  ];
+  if (cat === 'salad') return [
+    '主料洗淨，切好備用。',
+    '將醬料材料混合均勻。',
+    '將主料放入大碗，淋上醬料。',
+    '拌勻，冷藏30分鐘後享用更佳。'
+  ];
+  if (cat === 'riceball') return [
+    '米煮熟，拌入壽司醋，放涼至微溫。',
+    '手沾濕，取適量飯放掌心。',
+    '中間放入餡料，捏成三角形。',
+    '包上海苔即可。'
+  ];
+  if (cat === 'dessert') return [
+    '主料洗淨，提前浸泡（如需要）。',
+    '加水放入鍋中，大火煮滾。',
+    '轉小火，加入冰糖，慢煮30-60分鐘。',
+    '糖完全溶化即可享用，冷熱皆宜。'
+  ];
+  if (cat === 'egg') return [
+    '雞蛋打散，加少許鹽和水拌勻。',
+    '用濾網過篩蛋液，使其更滑嫩。',
+    '蒸鍋水滾後，放入蛋液，中小火蒸8-10分鐘。',
+    '取出，淋上少許醬油和麻油即可。'
+  ];
+  if (cat === 'seafood') return [
+    '海鮮洗淨，用廚紙吸乾水分。',
+    '薑切片，蒜切蓉，蔥切花。',
+    '熱鍋下油，爆香薑蒜。',
+    '放入海鮮，加醬油和紹興酒，翻炒或蒸煮至熟。',
+    '灑上蔥花，即可上桌。'
+  ];
+  // Default
+  return [
+    '將所有材料洗淨，切好備用。',
+    '熱鍋下油，爆香蒜蓉。',
+    '加入主料翻炒。',
+    '加調味料，翻炒均勻至熟。',
+    '即可上桌享用。'
+  ];
+}
+
+// ===== RANDOM RECIPE =====
+function randomRecipe() {
+  const filtered = getFilteredRecipes();
+  if (filtered.length === 0) {
+    showToast('暫無符合的食譜 · Walang resipeng tugma');
+    return;
+  }
+  const r = filtered[Math.floor(Math.random() * filtered.length)];
+  openRecipeModal(r.id, r.isCustom);
+}
+
+// ===== ADD CUSTOM RECIPE =====
+function openAddModal() {
+  document.getElementById('addModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAddModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('addModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function addCustomRecipe() {
+  const zh = document.getElementById('addZh').value.trim();
+  const fil = document.getElementById('addFil').value.trim();
+  const category = document.getElementById('addCategory').value;
+  const portion = document.getElementById('addPortion').value;
+  const difficulty = document.getElementById('addDifficulty').value;
+  const time = document.getElementById('addTime').value.trim() || '30min';
+  const ingredientsText = document.getElementById('addIngredients').value.trim();
+  const stepsText = document.getElementById('addSteps').value.trim();
+
+  if (!zh) { showToast('請輸入中文名稱'); return; }
+  if (!fil) { showToast('請輸入 Filipino name'); return; }
+
+  const ingredients = ingredientsText ? ingredientsText.split('\n').filter(l => l.trim()) : null;
+  const steps = stepsText ? stepsText.split('\n').filter(l => l.trim()) : null;
+
+  const newId = RECIPES.length + customRecipes.length + 1;
+  const recipe = {
+    id: newId,
+    zh, fil, category, portion, difficulty, time,
+    ingredients: ingredients,
+    steps: steps,
+    isCustom: true
+  };
+
+  customRecipes.push(recipe);
+  try {
+    localStorage.setItem('customRecipes', JSON.stringify(customRecipes));
+  } catch(e) {}
+
+  // Clear form
+  document.getElementById('addZh').value = '';
+  document.getElementById('addFil').value = '';
+  document.getElementById('addTime').value = '';
+  document.getElementById('addIngredients').value = '';
+  document.getElementById('addSteps').value = '';
+
+  closeAddModal();
+  buildCategoryFilters();
+  renderRecipes();
+  updateCount();
+  showToast('✅ 食譜已加入！· Naidagdag na ang resipi!');
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== INIT =====
+init();
+</script>
+</body>
+</html>
