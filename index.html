@@ -570,11 +570,11 @@ body {
     <div class="modal-emoji" id="modalEmoji"></div>
     <div class="modal-meta" id="modalMeta"></div>
     <div class="modal-section" id="modalIngredients">
-      <h3>🥬 食材 · Mga Sangkap</h3>
+      <h3>🥬 食材 · Ingredients · Mga Sangkap</h3>
       <ul id="ingredientsList"></ul>
     </div>
     <div class="modal-section" id="modalSteps">
-      <h3>👨‍🍳 做法 · Paraan ng Pagluluto</h3>
+      <h3>👨‍🍳 做法 · Cooking Steps · Paraan ng Pagluluto</h3>
       <ol id="stepsList"></ol>
     </div>
   </div>
@@ -861,17 +861,49 @@ function openRecipeModal(id, isCustom) {
     <span class="meta-tag">⏱️ ${r.time}</span>
   `;
 
-  // Ingredients
-  const ingredients = r.ingredients || generateIngredients(r);
-  document.getElementById('ingredientsList').innerHTML = ingredients.map(i =>
-    `<li>${escHtml(i)}</li>`
-  ).join('');
+  // Ingredients - Trilingual
+  const ingredients = r.ingredients || generateIngredients(r, 'zh');
+  const triIng = TRILINGUAL_INGREDIENTS[r.zh];
+  const ingLang = currentLangMode === 'zhfil' ? 'zh' : (currentLangMode === 'zhen' ? 'en' : 'all');
+  
+  let ingHtml = '';
+  if (ingLang === 'all' && triIng) {
+    ingHtml = ingredients.map((i, idx) => {
+      const en = triIng.en[idx] || i;
+      const fil = triIng.fil[idx] || i;
+      return `<li><strong>${escHtml(i)}</strong><br><span style="color:#666;font-size:0.85em">${escHtml(en)} · ${escHtml(fil)}</span></li>`;
+    }).join('');
+  } else if (ingLang === 'en' && triIng) {
+    ingHtml = ingredients.map((i, idx) => {
+      const en = triIng.en[idx] || i;
+      return `<li><strong>${escHtml(en)}</strong></li>`;
+    }).join('');
+  } else {
+    ingHtml = ingredients.map(i => `<li>${escHtml(i)}</li>`).join('');
+  }
+  document.getElementById('ingredientsList').innerHTML = ingHtml;
 
-  // Steps
-  const steps = r.steps || generateSteps(r);
-  document.getElementById('stepsList').innerHTML = steps.map(s =>
-    `<li>${escHtml(s)}</li>`
-  ).join('');
+  // Steps - Trilingual
+  const steps = r.steps || generateSteps(r, 'zh');
+  const triSteps = TRILINGUAL_STEPS[r.zh];
+  const stepsLang = currentLangMode === 'zhfil' ? 'zh' : (currentLangMode === 'zhen' ? 'en' : 'all');
+  
+  let stepsHtml = '';
+  if (stepsLang === 'all' && triSteps) {
+    stepsHtml = steps.map((s, idx) => {
+      const en = triSteps.en[idx] || s;
+      const fil = triSteps.fil[idx] || s;
+      return `<li><strong>${escHtml(s)}</strong><br><span style="color:#666;font-size:0.85em">${escHtml(en)}<br>${escHtml(fil)}</span></li>`;
+    }).join('');
+  } else if (stepsLang === 'en' && triSteps) {
+    stepsHtml = steps.map((s, idx) => {
+      const en = triSteps.en[idx] || s;
+      return `<li><strong>${escHtml(en)}</strong></li>`;
+    }).join('');
+  } else {
+    stepsHtml = steps.map(s => `<li>${escHtml(s)}</li>`).join('');
+  }
+  document.getElementById('stepsList').innerHTML = stepsHtml;
 
   document.getElementById('recipeModal').classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -887,7 +919,8 @@ function closeModal(e) {
 }
 
 // ===== GENERATE PLACEHOLDER INGREDIENTS & STEPS =====
-function generateIngredients(r) {
+function generateIngredients(r, lang) {
+  lang = lang || 'zh';
   const cat = r.category;
   const zh = r.zh;
   const common = ['鹽 適量','胡椒粉 少許'];
@@ -1004,7 +1037,8 @@ function generateIngredients(r) {
   return ['食材 適量','調味料 適量'];
 }
 
-function generateSteps(r) {
+function generateSteps(r, lang) {
+  lang = lang || 'zh';
   const cat = r.category;
   const zh = r.zh;
 
