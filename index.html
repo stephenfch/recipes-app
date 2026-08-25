@@ -919,6 +919,516 @@ function closeModal(e) {
 }
 
 // ===== GENERATE PLACEHOLDER INGREDIENTS & STEPS =====
+const TRILINGUAL_INGREDIENTS = {
+  '蒜蓉蒸排骨': {
+    en: ['Pork ribs 400g', 'Garlic 3 cloves', 'Soy sauce 2 tbsp', 'Sugar 1 tsp', 'Cornstarch 1 tsp', 'Shaoxing wine 1 tsp'],
+    fil: ['Tadyang ng baboy 400g', 'Bawang 3 butil', 'Toyo 2 kutsara', 'Asukal 1 kutsarita', 'Cornstarch 1 kutsarita', 'Alak ng Shaoxing 1 kutsarita'],
+  },
+  '京都骨': {
+    en: ['Pork spare ribs 500g', 'Tomato sauce 3 tbsp', 'Vinegar 1 tbsp', 'Sugar 2 tbsp', 'Soy sauce 1 tbsp', 'Garlic 1 clove', 'Cornstarch'],
+    fil: ['Tadyang ng baboy 500g', 'Sarsa ng kamatis 3 kutsara', 'Suka 1 kutsara', 'Asukal 2 kutsara', 'Toyo 1 kutsara', 'Bawang 1 butil', 'Cornstarch'],
+  },
+  '番茄薯仔炆牛腩': {
+    en: ['Beef brisket 600g', 'Tomato 3', 'Potato 2', 'Ginger slices 3', 'Tomato sauce 2 tbsp', 'Soy sauce 2 tbsp', 'Rock sugar to taste'],
+    fil: ['Brisket ng baka 600g', 'Kamatis 3', 'Patatas 2', 'Hiwa ng luya 3', 'Sarsa ng kamatis 2 kutsara', 'Toyo 2 kutsara', 'Asukal na bato ayon sa panlasa'],
+  },
+  '蜜汁叉燒': {
+    en: ['Pork shoulder 500g', 'Char siu sauce 3 tbsp', 'Oyster sauce 1 tbsp', 'Sugar 2 tbsp', 'Rose wine 1 tbsp', 'Honey'],
+    fil: ['Balikat ng baboy 500g', 'Sarsa ng char siu 3 kutsara', 'Sarsa ng talaba 1 kutsara', 'Asukal 2 kutsara', 'Alak ng rosas 1 kutsara', 'Pulot'],
+  },
+  '涼瓜炒牛肉': {
+    en: ['Beef 200g', 'Bitter melon 1', 'Garlic 1 clove', 'Fermented black beans 1 tsp', 'Soy sauce 1 tbsp', 'Cornstarch 1 tsp'],
+    fil: ['Baka 200g', 'Ampalaya 1', 'Bawang 1 butil', 'Tausi 1 kutsarita', 'Toyo 1 kutsara', 'Cornstarch 1 kutsarita'],
+  },
+  '柱侯醬燜雞翼': {
+    en: ['Chicken wings 8', 'Chu Hou paste 2 tbsp', 'Soy sauce 1 tbsp', 'Dark soy sauce 1 tsp', 'Sugar 1 tsp', 'Ginger slices 3', 'Water half cup'],
+    fil: ['Pakpak ng manok 8', 'Sarsa ng Chu Hou 2 kutsara', 'Toyo 1 kutsara', 'Dark toyo 1 kutsarita', 'Asukal 1 kutsarita', 'Hiwa ng luya 3', 'Tubig kalahating tasa'],
+  },
+  '黑椒牛柳': {
+    en: ['Beef tenderloin 250g', 'Black pepper 1 tsp', 'Garlic 1 clove', 'Oyster sauce 1 tbsp', 'Cornstarch 1 tsp'],
+    fil: ['Lomo ng baka 250g', 'Paminta itim 1 kutsarita', 'Bawang 1 butil', 'Sarsa ng talaba 1 kutsara', 'Cornstarch 1 kutsarita'],
+  },
+  '椰汁香茅咖喱雞': {
+    en: ['Chicken thigh 400g', 'Coconut milk 200ml', 'Lemongrass 2 stalks', 'Curry powder 2 tbsp', 'Garlic 1 clove', 'Fish sauce 1 tsp'],
+    fil: ['Hita ng manok 400g', 'Gata 200ml', 'Tanglad 2 piraso', 'Pulbos ng kari 2 kutsara', 'Bawang 1 butil', 'Sarsa ng isda 1 kutsarita'],
+  },
+  '豉汁蒸鯇魚': {
+    en: ['Grass carp 1 fish', 'Fermented black beans 1 tbsp', 'Garlic 2 cloves', 'Ginger shreds', 'Scallion shreds', 'Soy sauce 1 tbsp'],
+    fil: ['Isdang grass carp 1', 'Tausi 1 kutsara', 'Bawang 2 butil', 'Hiniwang luya', 'Hiniwang sibuyas na dahon', 'Toyo 1 kutsara'],
+  },
+  '蒜蓉蒸蝦': {
+    en: ['Prawns 300g', 'Garlic 3 cloves', 'Glass noodles', 'Soy sauce 1 tbsp', 'Oil'],
+    fil: ['Hipon 300g', 'Bawang 3 butil', 'Glass noodles', 'Toyo 1 kutsara', 'Mantika'],
+  },
+  '薑蔥炒蟹': {
+    en: ['Crab 2', 'Ginger slices', 'Scallion sections', 'Garlic 1 clove', 'Shaoxing wine 1 tbsp', 'Soy sauce 1 tbsp'],
+    fil: ['Alimasag 2', 'Hiwa ng luya', 'Hiniwang sibuyas na dahon', 'Bawang 1 butil', 'Alak ng Shaoxing 1 kutsara', 'Toyo 1 kutsara'],
+  },
+  'XO醬炒蝦仁': {
+    en: ['Shrimp 200g', 'XO sauce 1 tbsp', 'Garlic 1 clove', 'Scallion', 'Oil'],
+    fil: ['Hipon 200g', 'XO sauce 1 kutsara', 'Bawang 1 butil', 'Sibuyas na dahon', 'Mantika'],
+  },
+  '味醂香煎三文魚': {
+    en: ['Salmon fillet 2', 'Mirin 2 tbsp', 'Soy sauce 1 tbsp', 'Salt', 'Oil'],
+    fil: ['Salmon fillet 2', 'Mirin 2 kutsara', 'Toyo 1 kutsara', 'Asin', 'Mantika'],
+  },
+  '咸檸檬蒸魚': {
+    en: ['Fish 1', 'Salted lemon 1', 'Ginger shreds', 'Soy sauce 1 tbsp'],
+    fil: ['Isda 1', 'Inasnang limon 1', 'Hiniwang luya', 'Toyo 1 kutsara'],
+  },
+  '蠔油生菜': {
+    en: ['Lettuce 1 head', 'Oyster sauce 2 tbsp', 'Garlic 1 clove', 'Oil'],
+    fil: ['Letsugas 1', 'Sarsa ng talaba 2 kutsara', 'Bawang 1 butil', 'Mantika'],
+  },
+  '蒜蓉炒芥蘭': {
+    en: ['Chinese broccoli 300g', 'Garlic 3 cloves', 'Oil', 'Salt'],
+    fil: ['Kailan 300g', 'Bawang 3 butil', 'Mantika', 'Asin'],
+  },
+  '蝦米炒椰菜': {
+    en: ['Cabbage 300g', 'Dried shrimp 20g', 'Garlic 1 clove', 'Salt', 'Oil'],
+    fil: ['Repolyo 300g', 'Tuyo na hipon 20g', 'Bawang 1 butil', 'Asin', 'Mantika'],
+  },
+  '涼拌青瓜': {
+    en: ['Cucumber 2', 'Garlic 1 clove', 'Vinegar 1 tbsp', 'Sugar 1 tsp', 'Sesame oil 1 tsp', 'Chili oil'],
+    fil: ['Pipino 2', 'Bawang 1 butil', 'Suka 1 kutsara', 'Asukal 1 kutsarita', 'Mantika ng linga 1 kutsarita', 'Mantika ng sili'],
+  },
+  '木耳炒西芹百合': {
+    en: ['Black fungus 50g', 'Celery 200g', 'Lily bulb 50g', 'Garlic 1 clove', 'Salt', 'Oil'],
+    fil: ['Tainga ng daga 50g', 'Kintsay 200g', 'Lily bulb 50g', 'Bawang 1 butil', 'Asin', 'Mantika'],
+  },
+  '椒絲腐乳炒通菜': {
+    en: ['Water spinach 300g', 'Fermented tofu 2 pieces', 'Chili shreds', 'Garlic 1 clove', 'Oil'],
+    fil: ['Kangkong 300g', 'Tahuring binuro 2 piraso', 'Hiniwang sili', 'Bawang 1 butil', 'Mantika'],
+  },
+  '節瓜蜆肉湯': {
+    en: ['Hairy melon 1', 'Clam meat 100g', 'Ginger slices 2', 'Salt'],
+    fil: ['Hairy melon 1', 'Karne ng tulya 100g', 'Hiwa ng luya 2', 'Asin'],
+  },
+  '冬瓜薏米湯': {
+    en: ['Winter melon 500g', 'Barley 50g', 'Pork bone 300g', 'Honey date 2', 'Ginger slices 2', 'Salt'],
+    fil: ['Kondol 500g', 'Adlai 50g', 'Buto ng baboy 300g', 'Honey date 2', 'Hiwa ng luya 2', 'Asin'],
+  },
+  '番茄薯仔湯': {
+    en: ['Tomato 3', 'Potato 2', 'Pork bone 300g', 'Ginger slices 2', 'Salt'],
+    fil: ['Kamatis 3', 'Patatas 2', 'Buto ng baboy 300g', 'Hiwa ng luya 2', 'Asin'],
+  },
+  '紫菜蛋花湯': {
+    en: ['Seaweed', 'Egg 1', 'Salt', 'Scallion'],
+    fil: ['Norila', 'Itlog 1', 'Asin', 'Sibuyas na dahon'],
+  },
+  '眉豆花生豬骨湯': {
+    en: ['Black-eyed peas 50g', 'Peanut 50g', 'Pork bone 300g', 'Honey date 2', 'Salt'],
+    fil: ['Paayap 50g', 'Mani 50g', 'Buto ng baboy 300g', 'Honey date 2', 'Asin'],
+  },
+  '揚州炒飯': {
+    en: ['Cooked rice 2 bowls', 'Egg 2', 'Char siu 50g', 'Shrimp 50g', 'Green peas', 'Salt', 'Scallion'],
+    fil: ['Lutong kanin 2 mangkok', 'Itlog 2', 'Char siu 50g', 'Hipon 50g', 'Green peas', 'Asin', 'Sibuyas na dahon'],
+  },
+  '豉油皇炒麵': {
+    en: ['Noodles 200g', 'Dark soy sauce 2 tbsp', 'Soy sauce 1 tbsp', 'Sugar 1 tsp', 'Scallion', 'Oil'],
+    fil: ['Pansit 200g', 'Dark toyo 2 kutsara', 'Toyo 1 kutsara', 'Asukal 1 kutsarita', 'Sibuyas na dahon', 'Mantika'],
+  },
+  '星洲炒米': {
+    en: ['Vermicelli 200g', 'Shrimp 50g', 'Char siu 50g', 'Egg 1', 'Curry powder 1 tsp', 'Salt'],
+    fil: ['Bihun 200g', 'Hipon 50g', 'Char siu 50g', 'Itlog 1', 'Pulbos ng kari 1 kutsarita', 'Asin'],
+  },
+  '番茄炒蛋': {
+    en: ['Egg 3', 'Tomato 2', 'Sugar 1 tsp', 'Salt', 'Oil'],
+    fil: ['Itlog 3', 'Kamatis 2', 'Asukal 1 kutsarita', 'Asin', 'Mantika'],
+  },
+  '涼瓜炒蛋': {
+    en: ['Bitter melon 1', 'Egg 3', 'Salt', 'Sugar', 'Oil'],
+    fil: ['Ampalaya 1', 'Itlog 3', 'Asin', 'Asukal', 'Mantika'],
+  },
+  '家常豆腐': {
+    en: ['Firm tofu 1 block', 'Minced pork 100g', 'Garlic 1 clove', 'Doubanjiang 1 tsp', 'Scallion'],
+    fil: ['Matigas na tokwa 1', 'Giniling na baboy 100g', 'Bawang 1 butil', 'Doubanjiang 1 kutsarita', 'Sibuyas na dahon'],
+  },
+  '蒸水蛋': {
+    en: ['Egg 3', 'Water 1.5x', 'Salt', 'Scallion', 'Soy sauce'],
+    fil: ['Itlog 3', 'Tubig 1.5x', 'Asin', 'Sibuyas na dahon', 'Toyo'],
+  },
+  '麻婆豆腐': {
+    en: ['Firm tofu 1 block', 'Minced pork 100g', 'Doubanjiang 1 tbsp', 'Sichuan pepper', 'Garlic 1 clove', 'Scallion'],
+    fil: ['Matigas na tokwa 1', 'Giniling na baboy 100g', 'Doubanjiang 1 kutsara', 'Sichuan pepper', 'Bawang 1 butil', 'Sibuyas na dahon'],
+  },
+  '皮蛋瘦肉粥': {
+    en: ['Rice 1 cup', 'Century egg 2', 'Lean pork 100g', 'Ginger shreds', 'Scallion', 'Salt', 'White pepper'],
+    fil: ['Kanin 1 tasa', 'Century egg 2', 'Lihim na baboy 100g', 'Hiniwang luya', 'Sibuyas na dahon', 'Asin', 'Puting paminta'],
+  },
+  '瑤柱豬骨粥': {
+    en: ['Rice 1 cup', 'Pork bone 300g', 'Dried scallop 3', 'Ginger slices 2', 'Scallion', 'Salt'],
+    fil: ['Kanin 1 tasa', 'Buto ng baboy 300g', 'Tuyong kabibe 3', 'Hiwa ng luya 2', 'Sibuyas na dahon', 'Asin'],
+  },
+  '乾炒牛河': {
+    en: ['Flat rice noodles 300g', 'Beef 200g', 'Bean sprouts', 'Scallion sections', 'Dark soy sauce 1 tbsp', 'Soy sauce 1 tbsp', 'Oil'],
+    fil: ['Flat rice noodles 300g', 'Baka 200g', 'Togue', 'Hiniwang sibuyas na dahon', 'Dark toyo 1 kutsara', 'Toyo 1 kutsara', 'Mantika'],
+  },
+  '白切雞': {
+    en: ['Whole chicken 1.5kg', 'Ginger 3 slices', 'Scallion 2 stalks', 'Salt 1 tbsp', 'Oil'],
+    fil: ['Buong manok 1.5kg', 'Luya 3 hiwa', 'Sibuyas na dahon 2 piraso', 'Asin 1 kutsara', 'Mantika'],
+  },
+  '清蒸魚': {
+    en: ['Whole fish 500g', 'Ginger shreds', 'Scallion shreds', 'Soy sauce 1 tbsp', 'Hot oil'],
+    fil: ['Buong isda 500g', 'Hiniwang luya', 'Hiniwang sibuyas na dahon', 'Toyo 1 kutsara', 'Mainit na mantika'],
+  },
+  '蒜蓉炒菜心': {
+    en: ['Choy sum 300g', 'Garlic 3 cloves', 'Oil', 'Salt'],
+    fil: ['Choy sum 300g', 'Bawang 3 butil', 'Mantika', 'Asin'],
+  },
+  '蒸肉餅': {
+    en: ['Minced pork 200g', 'Soy sauce 1 tbsp', 'Sugar 1 tsp', 'Cornstarch 1 tsp', 'Oil'],
+    fil: ['Giniling na baboy 200g', 'Toyo 1 kutsara', 'Asukal 1 kutsarita', 'Cornstarch 1 kutsarita', 'Mantika'],
+  },
+  '糖醋排骨': {
+    en: ['Pork spare ribs 500g', 'Tomato sauce 3 tbsp', 'Vinegar 1 tbsp', 'Sugar 2 tbsp', 'Cornstarch'],
+    fil: ['Tadyang ng baboy 500g', 'Sarsa ng kamatis 3 kutsara', 'Suka 1 kutsara', 'Asukal 2 kutsara', 'Cornstarch'],
+  },
+  '咕嚕肉': {
+    en: ['Pork 300g', 'Green pepper 1', 'Red pepper 1', 'Pineapple chunks', 'Tomato sauce 3 tbsp', 'Vinegar 1 tbsp', 'Sugar 2 tbsp'],
+    fil: ['Baboy 300g', 'Berde na paminta 1', 'Pulang paminta 1', 'Hiwang pinya', 'Sarsa ng kamatis 3 kutsara', 'Suka 1 kutsara', 'Asukal 2 kutsara'],
+  },
+  '梅菜扣肉': {
+    en: ['Pork belly 500g', 'Preserved mustard 100g', 'Garlic 1 clove', 'Soy sauce 2 tbsp', 'Sugar 1 tsp', 'Dark soy sauce 1 tsp'],
+    fil: ['Tiyan ng baboy 500g', 'Tuyong mustasa 100g', 'Bawang 1 butil', 'Toyo 2 kutsara', 'Asukal 1 kutsarita', 'Dark toyo 1 kutsarita'],
+  },
+  '南乳豬手': {
+    en: ['Pork knuckle 1', 'Red fermented bean curd 2 pieces', 'Garlic 1 clove', 'Soy sauce 1 tbsp', 'Sugar', 'Star anise 1'],
+    fil: ['Paa ng baboy 1', 'Pulang binuro na tokwa 2 piraso', 'Bawang 1 butil', 'Toyo 1 kutsara', 'Asukal', 'Star anise 1'],
+  },
+  '薑蔥牛肉': {
+    en: ['Beef 200g', 'Ginger slices', 'Scallion sections', 'Soy sauce 1 tbsp', 'Cornstarch 1 tsp', 'Oil'],
+    fil: ['Baka 200g', 'Hiwa ng luya', 'Hiniwang sibuyas na dahon', 'Toyo 1 kutsara', 'Cornstarch 1 kutsarita', 'Mantika'],
+  },
+  '豉椒牛肉': {
+    en: ['Beef 200g', 'Green pepper 1', 'Fermented black beans 1 tbsp', 'Garlic 1 clove', 'Soy sauce 1 tbsp', 'Oil'],
+    fil: ['Baka 200g', 'Berde na paminta 1', 'Tausi 1 kutsara', 'Bawang 1 butil', 'Toyo 1 kutsara', 'Mantika'],
+  },
+  '蠔油牛肉': {
+    en: ['Beef 200g', 'Oyster sauce 2 tbsp', 'Garlic 1 clove', 'Sugar 1 tsp', 'Cornstarch 1 tsp', 'Oil'],
+    fil: ['Baka 200g', 'Sarsa ng talaba 2 kutsara', 'Bawang 1 butil', 'Asukal 1 kutsarita', 'Cornstarch 1 kutsarita', 'Mantika'],
+  },
+  '西芹炒牛肉': {
+    en: ['Beef 200g', 'Celery 200g', 'Garlic 1 clove', 'Soy sauce 1 tbsp', 'Cornstarch 1 tsp', 'Oil'],
+    fil: ['Baka 200g', 'Kintsay 200g', 'Bawang 1 butil', 'Toyo 1 kutsara', 'Cornstarch 1 kutsarita', 'Mantika'],
+  },
+  '沙嗲牛金菇粉絲煲': {
+    en: ['Beef 200g', 'Enoki mushroom 1 pack', 'Glass noodles 1 bundle', 'Satay sauce 2 tbsp', 'Garlic 1 clove', 'Oil'],
+    fil: ['Baka 200g', 'Enoki mushroom 1 pack', 'Glass noodles 1 bundle', 'Sarsa ng satay 2 kutsara', 'Bawang 1 butil', 'Mantika'],
+  },
+  '鹽焗雞': {
+    en: ['Whole chicken 1', 'Salt baked chicken powder 1 pack', 'Salt', 'Ginger slices'],
+    fil: ['Buong manok 1', 'Pulbos ng inasnan na manok 1 pack', 'Asin', 'Hiwa ng luya'],
+  },
+  '蔥油雞': {
+    en: ['Whole chicken 1', 'Scallion 4 stalks', 'Ginger 3 slices', 'Oil 3 tbsp', 'Soy sauce 2 tbsp', 'Sugar 1 tsp'],
+    fil: ['Buong manok 1', 'Sibuyas na dahon 4 piraso', 'Luya 3 hiwa', 'Mantika 3 kutsara', 'Toyo 2 kutsara', 'Asukal 1 kutsarita'],
+  },
+  '醉雞': {
+    en: ['Chicken leg 4', 'Shaoxing wine 100ml', 'Salt 1 tsp', 'Sugar 1 tsp', 'Ginger slices'],
+    fil: ['Hita ng manok 4', 'Alak ng Shaoxing 100ml', 'Asin 1 kutsarita', 'Asukal 1 kutsarita', 'Hiwa ng luya'],
+  },
+  '油雞': {
+    en: ['Whole chicken 1', 'Soy sauce 100ml', 'Dark soy sauce 2 tbsp', 'Rock sugar', 'Ginger slices', 'Star anise 1'],
+    fil: ['Buong manok 1', 'Toyo 100ml', 'Dark toyo 2 kutsara', 'Asukal na bato', 'Hiwa ng luya', 'Star anise 1'],
+  },
+  '腐乳蒸雞': {
+    en: ['Chicken thigh 300g', 'Fermented tofu 2 pieces', 'Garlic 1 clove', 'Sugar 1 tsp', 'Oil'],
+    fil: ['Hita ng manok 300g', 'Tahuring binuro 2 piraso', 'Bawang 1 butil', 'Asukal 1 kutsarita', 'Mantika'],
+  },
+  '白灼蝦': {
+    en: ['Prawns 300g', 'Ginger slices 3', 'Scallion sections', 'Salt'],
+    fil: ['Hipon 300g', 'Hiwa ng luya 3', 'Hiniwang sibuyas na dahon', 'Asin'],
+  },
+  '蠔仔煎蛋': {
+    en: ['Oyster 200g', 'Egg 3', 'Sweet potato starch 2 tbsp', 'Salt', 'Oil'],
+    fil: ['Talaba 200g', 'Itlog 3', 'Sweet potato starch 2 kutsara', 'Asin', 'Mantika'],
+  },
+  '椒鹽鮮魷': {
+    en: ['Squid 300g', 'Salt and pepper powder 1 tsp', 'Garlic 1 clove', 'Oil', 'Cornstarch'],
+    fil: ['Pusit 300g', 'Asin at paminta 1 kutsarita', 'Bawang 1 butil', 'Mantika', 'Cornstarch'],
+  },
+  '腐乳通菜': {
+    en: ['Water spinach 300g', 'Fermented tofu 2 pieces', 'Garlic 1 clove', 'Oil'],
+    fil: ['Kangkong 300g', 'Tahuring binuro 2 piraso', 'Bawang 1 butil', 'Mantika'],
+  },
+  '魚香茄子煲': {
+    en: ['Eggplant 2', 'Minced pork 100g', 'Garlic 1 clove', 'Doubanjiang 1 tbsp', 'Sugar 1 tsp', 'Vinegar 1 tsp'],
+    fil: ['Talong 2', 'Giniling na baboy 100g', 'Bawang 1 butil', 'Doubanjiang 1 kutsara', 'Asukal 1 kutsarita', 'Suka 1 kutsarita'],
+  },
+  '霸王花豬骨湯': {
+    en: ['Night-blooming cereus 50g', 'Pork bone 400g', 'Honey date 2', 'Ginger slices 2', 'Salt'],
+    fil: ['Night-blooming cereus 50g', 'Buto ng baboy 400g', 'Honey date 2', 'Hiwa ng luya 2', 'Asin'],
+  },
+  '菜乾南北杏豬骨湯': {
+    en: ['Dried vegetable 50g', 'Almond 20g', 'Pork bone 300g', 'Honey date 2', 'Salt'],
+    fil: ['Tuyong gulay 50g', 'Almond 20g', 'Buto ng baboy 300g', 'Honey date 2', 'Asin'],
+  },
+  '粉葛赤小豆湯': {
+    en: ['Kudzu root 300g', 'Red bean 50g', 'Pork bone 300g', 'Honey date 2', 'Salt'],
+    fil: ['Kudzu root 300g', 'Pulang munggo 50g', 'Buto ng baboy 300g', 'Honey date 2', 'Asin'],
+  },
+  '豬紅粥': {
+    en: ['Rice 1 cup', 'Pig blood 200g', 'Ginger shreds', 'Scallion', 'Salt', 'White pepper'],
+    fil: ['Kanin 1 tasa', 'Dugo ng baboy 200g', 'Hiniwang luya', 'Sibuyas na dahon', 'Asin', 'Puting paminta'],
+  },
+  '及第粥': {
+    en: ['Rice 1 cup', 'Pork 100g', 'Pork liver 50g', 'Pork intestine 50g', 'Ginger shreds', 'Salt'],
+    fil: ['Kanin 1 tasa', 'Baboy 100g', 'Atay ng baboy 50g', 'Bituka ng baboy 50g', 'Hiniwang luya', 'Asin'],
+  },
+  '生滾魚片粥': {
+    en: ['Rice 1 cup', 'Fish fillet 150g', 'Ginger shreds', 'Scallion', 'Salt', 'White pepper'],
+    fil: ['Kanin 1 tasa', 'Fillet ng isda 150g', 'Hiniwang luya', 'Sibuyas na dahon', 'Asin', 'Puting paminta'],
+  },
+  '雞粥': {
+    en: ['Rice 1 cup', 'Chicken thigh 150g', 'Ginger shreds', 'Scallion', 'Salt'],
+    fil: ['Kanin 1 tasa', 'Hita ng manok 150g', 'Hiniwang luya', 'Sibuyas na dahon', 'Asin'],
+  },
+  '炒蛋': {
+    en: ['Eggs 3', 'Salt a little', 'Scallion', 'Oil 1 tbsp'],
+    fil: ['Itlog 3', 'Asin kaunti', 'Sibuyas na dahon', 'Mantika 1 kutsara'],
+  },
+  '煎蛋': {
+    en: ['Eggs 2', 'Salt a little', 'Oil 1 tbsp'],
+    fil: ['Itlog 2', 'Asin kaunti', 'Mantika 1 kutsara'],
+  },
+  '鹽焗雞蛋': {
+    en: ['Eggs 6', 'Salt baked powder 1 pack', 'Salt'],
+    fil: ['Itlog 6', 'Pulbos ng inasnan 1 pack', 'Asin'],
+  },
+  '鹽焗豆腐': {
+    en: ['Tofu 1 block', 'Salt baked powder 1 pack', 'Oil'],
+    fil: ['Tokwa 1', 'Pulbos ng inasnan 1 pack', 'Mantika'],
+  },
+  '三角飯糰': {
+    en: ['Sushi rice 2 cups', 'Sushi vinegar 2 tbsp', 'Filling', 'Nori seaweed'],
+    fil: ['Sushi rice 2 tasa', 'Sushi suka 2 kutsara', 'Palaman', 'Nori seaweed'],
+  },
+  '日式肉鬆飯糰': {
+    en: ['Sushi rice 2 cups', 'Pork floss', 'Nori seaweed'],
+    fil: ['Sushi rice 2 tasa', 'Pork floss', 'Nori seaweed'],
+  },
+  '日式黑芝麻雜菜飯糰': {
+    en: ['Sushi rice 2 cups', 'Mixed vegetables', 'Black sesame', 'Nori seaweed'],
+    fil: ['Sushi rice 2 tasa', 'Halamang gulay', 'Itim na linga', 'Nori seaweed'],
+  },
+  '香濃鮮茄大蝦意粉': {
+    en: ['Spaghetti 200g', 'Prawn 200g', 'Tomato 2', 'Cream', 'Garlic 3 cloves', 'Salt'],
+    fil: ['Spaghetti 200g', 'Hipon 200g', 'Kamatis 2', 'Cream', 'Bawang 3 butil', 'Asin'],
+  },
+  '卡邦尼意粉': {
+    en: ['Spaghetti 200g', 'Bacon 100g', 'Egg 2', 'Parmesan cheese', 'Black pepper'],
+    fil: ['Spaghetti 200g', 'Bacon 100g', 'Itlog 2', 'Parmesan cheese', 'Paminta itim'],
+  },
+  '腐乳卡邦尼意粉': {
+    en: ['Spaghetti 200g', 'Fermented tofu', 'Bacon 100g', 'Egg 2', 'Black pepper'],
+    fil: ['Spaghetti 200g', 'Tahuring binuro', 'Bacon 100g', 'Itlog 2', 'Paminta itim'],
+  },
+  '蒜香橄欖油意粉': {
+    en: ['Spaghetti 200g', 'Garlic 3 cloves', 'Olive oil 2 tbsp', 'Salt', 'Black pepper'],
+    fil: ['Spaghetti 200g', 'Bawang 3 butil', 'Olive oil 2 kutsara', 'Asin', 'Paminta itim'],
+  },
+  '滑蛋番茄通粉': {
+    en: ['Macaroni 200g', 'Tomato 2', 'Egg 3', 'Salt', 'Scallion'],
+    fil: ['Macaroni 200g', 'Kamatis 2', 'Itlog 3', 'Asin', 'Sibuyas na dahon'],
+  },
+  '雙雪桃膠木瓜糖水': {
+    en: ['Snow fungus', 'Peach resin', 'Papaya', 'Rock sugar'],
+    fil: ['Snow fungus', 'Peach resin', 'Papaya', 'Asukal na bato'],
+  },
+  '紅棗花膠燉鮮奶': {
+    en: ['Red date', 'Fish maw', 'Fresh milk', 'Rock sugar'],
+    fil: ['Pulang datiles', 'Fish maw', 'Sariwang gatas', 'Asukal na bato'],
+  },
+  '桂花桃膠燉三白': {
+    en: ['Osmanthus', 'Peach resin', 'Snow fungus', 'Lotus seed', 'Rock sugar'],
+    fil: ['Osmanthus', 'Peach resin', 'Snow fungus', 'Buto ng lotus', 'Asukal na bato'],
+  },
+  '檸檬薏米水': {
+    en: ['Lemon', 'Jobs tears', 'Rock sugar', 'Water'],
+    fil: ['Limon', 'Jobs tears', 'Asukal na bato', 'Tubig'],
+  },
+  '生炒骨': {
+    en: ['Pork spare ribs 400g', 'Green pepper 1', 'Red pepper 1', 'Tomato sauce 3 tbsp', 'Vinegar 1 tbsp', 'Sugar 2 tbsp', 'Cornstarch'],
+    fil: ['Tadyang ng baboy 400g', 'Berde na paminta 1', 'Pulang paminta 1', 'Sarsa ng kamatis 3 kutsara', 'Suka 1 kutsara', 'Asukal 2 kutsara', 'Cornstarch'],
+  },
+  '蒜香骨': {
+    en: ['Pork spare ribs 400g', 'Garlic 5 cloves', 'Soy sauce 1 tbsp', 'Sugar 1 tsp', 'Cornstarch', 'Oil'],
+    fil: ['Tadyang ng baboy 400g', 'Bawang 5 butil', 'Toyo 1 kutsara', 'Asukal 1 kutsarita', 'Cornstarch', 'Mantika'],
+  },
+  '糖醋魚': {
+    en: ['Whole fish 1', 'Tomato sauce 3 tbsp', 'Vinegar 1 tbsp', 'Sugar 2 tbsp', 'Cornstarch', 'Oil'],
+    fil: ['Buong isda 1', 'Sarsa ng kamatis 3 kutsara', 'Suka 1 kutsara', 'Asukal 2 kutsara', 'Cornstarch', 'Mantika'],
+  },
+  '薑蔥焗魚': {
+    en: ['Whole fish 1', 'Ginger slices', 'Scallion sections', 'Garlic 1 clove', 'Soy sauce 1 tbsp', 'Oil'],
+    fil: ['Buong isda 1', 'Hiwa ng luya', 'Hiniwang sibuyas na dahon', 'Bawang 1 butil', 'Toyo 1 kutsara', 'Mantika'],
+  },
+  '豉椒炒蜆': {
+    en: ['Clam 300g', 'Green pepper 1', 'Fermented black beans 1 tbsp', 'Garlic 1 clove', 'Soy sauce 1 tbsp', 'Oil'],
+    fil: ['Tulya 300g', 'Berde na paminta 1', 'Tausi 1 kutsara', 'Bawang 1 butil', 'Toyo 1 kutsara', 'Mantika'],
+  },
+  '蒜蓉開邊蝦': {
+    en: ['Prawn 300g', 'Garlic 3 cloves', 'Butter 1 tbsp', 'Salt'],
+    fil: ['Hipon 300g', 'Bawang 3 butil', 'Mantikilya 1 kutsara', 'Asin'],
+  },
+  '鹽焗雞翼': {
+    en: ['Chicken wings 8', 'Salt baked powder 1 pack', 'Salt', 'Oil'],
+    fil: ['Pakpak ng manok 8', 'Pulbos ng inasnan 1 pack', 'Asin', 'Mantika'],
+  },
+  '鹽焗乳鴿': {
+    en: ['Squab 1', 'Salt baked powder 1 pack', 'Salt', 'Ginger slices'],
+    fil: ['Squab 1', 'Pulbos ng inasnan 1 pack', 'Asin', 'Hiwa ng luya'],
+  },
+  '油鹽水浸魚': {
+    en: ['Whole fish 1', 'Ginger slices', 'Scallion sections', 'Oil 1 tbsp', 'Salt 1 tsp'],
+    fil: ['Buong isda 1', 'Hiwa ng luya', 'Hiniwang sibuyas na dahon', 'Mantika 1 kutsara', 'Asin 1 kutsarita'],
+  },
+  '鹽水毛豆': {
+    en: ['Edamame 200g', 'Salt 1 tsp', 'Star anise 1'],
+    fil: ['Edamame 200g', 'Asin 1 kutsarita', 'Star anise 1'],
+  },
+  '鹽水菜心': {
+    en: ['Choy sum 300g', 'Salt', 'Oil'],
+    fil: ['Choy sum 300g', 'Asin', 'Mantika'],
+  },
+  '蒜蓉炒時蔬': {
+    en: ['Seasonal vegetables 300g', 'Garlic 3 cloves', 'Oil', 'Salt'],
+    fil: ['Pang-seasonal na gulay 300g', 'Bawang 3 butil', 'Mantika', 'Asin'],
+  },
+  '鹽焗薯仔': {
+    en: ['Potato 300g', 'Salt baked powder 1 pack', 'Oil'],
+    fil: ['Patatas 300g', 'Pulbos ng inasnan 1 pack', 'Mantika'],
+  },
+  '鹽焗粟米': {
+    en: ['Corn 2', 'Salt baked powder 1 pack', 'Butter'],
+    fil: ['Mais 2', 'Pulbos ng inasnan 1 pack', 'Mantikilya'],
+  },
+  '蝦醬炒通菜': {
+    en: ['Water spinach 300g', 'Shrimp paste 1 tbsp', 'Garlic 1 clove', 'Oil'],
+    fil: ['Kangkong 300g', 'Bagoong 1 kutsara', 'Bawang 1 butil', 'Mantika'],
+  },
+  '沙茶牛肉': {
+    en: ['Beef 200g', 'Satay sauce 2 tbsp', 'Garlic 1 clove', 'Oil'],
+    fil: ['Baka 200g', 'Sarsa ng satay 2 kutsara', 'Bawang 1 butil', 'Mantika'],
+  },
+  '薑汁牛肉': {
+    en: ['Beef 200g', 'Ginger juice 2 tbsp', 'Soy sauce 1 tbsp', 'Cornstarch 1 tsp', 'Oil'],
+    fil: ['Baka 200g', 'Katas ng luya 2 kutsara', 'Toyo 1 kutsara', 'Cornstarch 1 kutsarita', 'Mantika'],
+  },
+  '鹽煎牛柳': {
+    en: ['Beef tenderloin 250g', 'Salt', 'Black pepper', 'Oil'],
+    fil: ['Lomo ng baka 250g', 'Asin', 'Paminta itim', 'Mantika'],
+  },
+  '牛肉球': {
+    en: ['Beef 300g', 'Water chestnut', 'Cornstarch', 'Soy sauce', 'Oil'],
+    fil: ['Baka 300g', 'Water chestnut', 'Cornstarch', 'Toyo', 'Mantika'],
+  },
+  '豬手薑': {
+    en: ['Pork knuckle 1', 'Ginger', 'Vinegar', 'Sugar', 'Soy sauce'],
+    fil: ['Paa ng baboy 1', 'Luya', 'Suka', 'Asukal', 'Toyo'],
+  },
+  '腐乳排骨': {
+    en: ['Spare ribs 400g', 'Fermented tofu 2 pieces', 'Garlic 1 clove', 'Sugar 1 tsp', 'Oil'],
+    fil: ['Tadyang ng baboy 400g', 'Tahuring binuro 2 piraso', 'Bawang 1 butil', 'Asukal 1 kutsarita', 'Mantika'],
+  },
+  '南乳炆豬手': {
+    en: ['Pork knuckle 1', 'Red fermented bean curd 2 pieces', 'Garlic 1 clove', 'Soy sauce 1 tbsp', 'Sugar', 'Star anise 1'],
+    fil: ['Paa ng baboy 1', 'Pulang binuro na tokwa 2 piraso', 'Bawang 1 butil', 'Toyo 1 kutsara', 'Asukal', 'Star anise 1'],
+  },
+  '滷豬耳': {
+    en: ['Pig ear 1', 'Soy sauce', 'Dark soy sauce', 'Star anise', 'Ginger'],
+    fil: ['Tenga ng baboy 1', 'Toyo', 'Dark toyo', 'Star anise', 'Luya'],
+  },
+  '豬肚釀雞': {
+    en: ['Pork stomach 1', 'Whole chicken 1', 'Ginger', 'Scallion', 'Salt'],
+    fil: ['Tiyan ng baboy 1', 'Buong manok 1', 'Luya', 'Sibuyas na dahon', 'Asin'],
+  },
+  '薑蔥豬潤': {
+    en: ['Pork liver 200g', 'Ginger slices', 'Scallion sections', 'Soy sauce 1 tbsp', 'Oil'],
+    fil: ['Atay ng baboy 200g', 'Hiwa ng luya', 'Hiniwang sibuyas na dahon', 'Toyo 1 kutsara', 'Mantika'],
+  },
+  '鹽焗豬手': {
+    en: ['Pork knuckle 1', 'Salt baked powder 1 pack', 'Salt', 'Ginger'],
+    fil: ['Paa ng baboy 1', 'Pulbos ng inasnan 1 pack', 'Asin', 'Luya'],
+  },
+  '豬紅炒韭菜': {
+    en: ['Pig blood 200g', 'Chinese chives 200g', 'Garlic 1 clove', 'Salt', 'Oil'],
+    fil: ['Dugo ng baboy 200g', 'Kintsay 200g', 'Bawang 1 butil', 'Asin', 'Mantika'],
+  },
+  '叉燒炒飯': {
+    en: ['Cooked rice 2 bowls', 'Char siu 100g', 'Egg 2', 'Scallion', 'Salt'],
+    fil: ['Lutong kanin 2 mangkok', 'Char siu 100g', 'Itlog 2', 'Sibuyas na dahon', 'Asin'],
+  },
+  '豬膶湯': {
+    en: ['Pork liver 200g', 'Spinach 200g', 'Ginger slices 2', 'Salt', 'Oil'],
+    fil: ['Atay ng baboy 200g', 'Espinaka 200g', 'Hiwa ng luya 2', 'Asin', 'Mantika'],
+  },
+  '豬肚雞': {
+    en: ['Pork stomach 1', 'Whole chicken 1', 'Ginger', 'Scallion', 'Salt'],
+    fil: ['Tiyan ng baboy 1', 'Buong manok 1', 'Luya', 'Sibuyas na dahon', 'Asin'],
+  },
+  '西洋菜豬骨湯': {
+    en: ['Watercress 300g', 'Pork bone 300g', 'Ginger slices 2', 'Salt'],
+    fil: ['Watercress 300g', 'Buto ng baboy 300g', 'Hiwa ng luya 2', 'Asin'],
+  },
+  '節瓜章魚雞腳湯': {
+    en: ['Hairy melon 1', 'Dried octopus', 'Chicken feet', 'Ginger', 'Salt'],
+    fil: ['Hairy melon 1', 'Tuyong pugita', 'Paa ng manok', 'Luya', 'Asin'],
+  },
+  '蓮藕豬骨湯': {
+    en: ['Lotus root 300g', 'Pork bone 300g', 'Ginger slices 2', 'Salt'],
+    fil: ['Lotus root 300g', 'Buto ng baboy 300g', 'Hiwa ng luya 2', 'Asin'],
+  },
+  '潮州粥': {
+    en: ['Rice 1 cup', 'Water 8 cups', 'Assorted ingredients', 'Ginger', 'Scallion', 'Salt'],
+    fil: ['Kanin 1 tasa', 'Tubig 8 tasa', 'Halong sangkap', 'Luya', 'Sibuyas na dahon', 'Asin'],
+  },
+};
+
+const TRILINGUAL_STEPS = {
+  '番茄薯仔炆牛腩': {
+    en: ['Wash and cut beef brisket, blanch in boiling water', 'Cut tomato into wedges, peel and cube potato', 'Heat oil, sauté ginger and scallion', 'Add beef brisket, stir-fry with tomato sauce', 'Add tomato, potato, soy sauce, rock sugar, star anise and water', 'Bring to boil, reduce to low heat, simmer 1.5 hours until tender'],
+    fil: ['Linisin at hiwain ang brisket, isawsaw sa kumukulo na tubig', 'Hiwain ang kamatis, balatan at tadtadin ang patatas', 'Painitin ang mantika, igisa ang luya at sibuyas na dahon', 'Idagdag ang brisket, igisa kasama ang sarsa ng kamatis', 'Idagdag ang kamatis, patatas, toyo, asukal na bato, star anise at tubig', 'Pakuluin, hinaan ang apoy, lutuin ng 1.5 oras hanggang lumambot'],
+  },
+  '蒜蓉蒸排骨': {
+    en: ['Wash ribs, pound with back of knife, cut into pieces', 'Mix with marinade, marinate 15 minutes', 'Place ribs on plate, top with minced garlic', 'Steam over high heat 10-12 minutes', 'Sprinkle with scallion and serve'],
+    fil: ['Linisin ang tadyang, palambutin ng kutsilyo, hiwain', 'Haluin sa marinade, i-marinate ng 15 minuto', 'Ilagay ang tadyang sa plato, takpan ng dinurog na bawang', 'I-steam sa mataas na apoy ng 10-12 minuto', 'Dagdagan ng sibuyas na dahon at ihain'],
+  },
+  '白切雞': {
+    en: ['Wash chicken, put in large pot', 'Add ginger, scallion and salt', 'Add water to cover chicken', 'Bring to boil then reduce to low heat', 'Simmer 30 minutes, turn off heat and let sit 15 minutes', 'Remove, soak in ice water, chop and serve'],
+    fil: ['Linisin ang manok, ilagay sa malaking kaldero', 'Idagdag ang luya, sibuyas na dahon at asin', 'Lagyan ng tubig para matakpan ang manok', 'Pakuluin tapos hinaan ang apoy', 'Lutuin ng 30 minuto, patayin ang apoy at hayaan ng 15 minuto', 'Alisin, ibabad sa yelo, hiwain at ihain'],
+  },
+  '清蒸魚': {
+    en: ['Wash fish, make slits on both sides', 'Top with ginger shreds', 'Steam over high heat 8-10 minutes', 'Pour away steaming liquid', 'Drizzle with soy sauce', 'Top with scallion shreds, pour hot oil over'],
+    fil: ['Linisin ang isda, gumawa ng hiwa sa magkabilang panig', 'Takpan ng hiniwang luya', 'I-steam sa mataas na apoy ng 8-10 minuto', 'Alisin ang tubig sa pag-steam', 'Dagdagan ng toyo', 'Takpan ng hiniwang sibuyas na dahon, ibuhos ang mainit na mantika'],
+  },
+  '乾炒牛河': {
+    en: ['Separate flat noodles', 'Slice beef, marinate 15 minutes', 'Stir-fry beef quickly 30 seconds, remove', 'Sauté garlic in same wok', 'Add noodles, season with soy sauces', 'Return beef, add bean sprouts and scallion, toss well'],
+    fil: ['Paghiwalayin ang flat noodles', 'Hiwain ang baka, i-marinate ng 15 minuto', 'Igisa ang baka ng mabilis ng 30 segundo, alisin', 'Igisa ang bawang sa same na kawali', 'Idagdag ang noodles, timplahan ng toyo', 'Ibalik ang baka, idagdag ang togue at sibuyas na dahon, haluing mabuti'],
+  },
+  '蜜汁叉燒': {
+    en: ['Wash pork, mix with char siu sauce, oyster sauce, sugar and rose wine', 'Marinate at least 4 hours or overnight', 'Preheat oven to 200°C', 'Roast for 20 minutes', 'Brush with honey, roast 5 more minutes', 'Flip, brush honey again, roast 5 minutes until caramelized', 'Rest 5 minutes, slice and serve'],
+    fil: ['Linisin ang baboy, haluin sa sarsa ng char siu, sarsa ng talaba, asukal at alak ng rosas', 'I-marinate ng hindi bababa sa 4 oras o magdamag', 'Painitin ang oven sa 200°C', 'I-roast ng 20 minuto', 'Pahiran ng pulot, i-roast ng 5 minuto pa', 'Baliktarin, pahiran uli ng pulot, i-roast ng 5 minuto hanggang caramelized', 'Hayaan ng 5 minuto, hiwain at ihain'],
+  },
+  '咕嚕肉': {
+    en: ['Cut pork into cubes, marinate 15 minutes', 'Coat with cornstarch', 'Deep fry until golden, remove', 'Cut peppers and pineapple', 'Heat oil, add tomato sauce, vinegar and sugar', 'Add all ingredients, stir-fry well'],
+    fil: ['Hiwain ang baboy ng cube, i-marinate ng 15 minuto', 'Balutin ng cornstarch', 'Prituhin hanggang golden, alisin', 'Hiwain ang paminta at pinya', 'Painitin ang mantika, idagdag ang sarsa ng kamatis, suka at asukal', 'Idagdag ang lahat ng sangkap, igisa nang mabuti'],
+  },
+  '梅菜扣肉': {
+    en: ['Boil pork belly until cooked, brush with dark soy sauce', 'Pan-fry until surface is golden', 'Slice, skin-side down in bowl', 'Top with minced preserved mustard', 'Add seasonings, steam 45 minutes', 'Invert onto plate and serve'],
+    fil: ['Pakuluin ang tiyan ng baboy hanggang luto, pahiran ng dark toyo', 'Iprito hanggang golden ang ibabaw', 'Hiwain, baligtarin sa mangkok', 'Takpan ng dinurog na tuyong mustasa', 'Idagdag ang pampalasa, i-steam ng 45 minuto', 'Baligtarin sa plato at ihain'],
+  },
+  '炒蛋': {
+    en: ['Beat eggs with a little salt', 'Heat oil in pan', 'Pour in eggs, scramble quickly', 'Serve immediately'],
+    fil: ['Haluin ang itlog na may kaunting asin', 'Painitin ang mantika sa kawali', 'Ibuhos ang itlog, haluin nang mabilis', 'Agad na ihain'],
+  },
+  '煎蛋': {
+    en: ['Heat oil in pan', 'Crack egg into pan', 'Cook to desired doneness', 'Season with salt'],
+    fil: ['Painitin ang mantika sa kawali', 'Basagin ang itlog sa kawali', 'Lutuin hanggang sa ninanais na doneness', 'Timplahan ng asin'],
+  },
+};
+
 function generateIngredients(r, lang) {
   lang = lang || 'zh';
   const cat = r.category;
